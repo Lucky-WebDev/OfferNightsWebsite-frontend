@@ -2,6 +2,7 @@ import axios from 'axios';
 import setAuthToken from '../api/setAuthToken';
 import { useSelector } from 'react-redux';
 import { StateType } from '../reducer/dataType';
+import { enqueueSnackbar } from 'notistack';
 
 const API_BASE: string = 'http://localhost:5000/user';
 const API_VERIFY: string = 'http://localhost:5000/verify';
@@ -22,7 +23,7 @@ export const signUp = (data: any) => (dispatch) => {
       console.log('Successfully token generate!')
     })
     .catch(err => {
-      console.log(err.response.data)
+      console.log(err.response)
     })
 }
 
@@ -30,36 +31,79 @@ export const resendVerificationCode = (data: string) => {
   axios
     .post(`${API_VERIFY}/token`, data)
     .then(res => {
-      alert("Successfully verify...")
+      enqueueSnackbar('successfully resend token')
     })
     .catch(err => {
       console.log(err.response.data)
     })
 }
 
-export const checkToken = (token: any) => dispatch => {
-  axios
-    .post(`${API_VERIFY}/check-token`, token)
-    .then(res => {
+// export const checkToken = (token: any) => dispatch => {
+//   axios
+//     .post(`${API_VERIFY}/check-token`, token)
+//     .then(res => {
+//       dispatch({
+//         type: 'GET_ERROR',
+//         payload: null
+//       })
+//       userSignUp();
+//       window.location.href = '/';
+//     })
+//     .catch(err => {
+//       dispatch({
+//         type: 'GET_ERROR',
+//         payload: 'Verify failure'
+//       })
+//     })
+// }
+
+export const checkToken = (data: any) => async dispatch => {
+  try {
+    const token: any = {
+      token: data.token,
+      email: data.email
+    }
+    const res = await axios.post(`${API_VERIFY}/check-token`, token);
+
+    if(res.data.data.flag == true) {
+      console.log(data)
+      enqueueSnackbar('Email Verify Success')
+      let signUpInfo = {
+        type: data.type,
+        firstName: data.firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        cell: data.cell,
+        password: data.password,
+        email: data.email,
+        termAgree: data.termAgree,
+      }
+      let res = await axios.post(`${API_BASE}/sign-up`, signUpInfo)
+      if(res.data.data.double == true) {
+        enqueueSnackbar('Double Email Error')
+        return;
+      }
+      window.location.href = '/user/sign-in'
+    } else {
+      enqueueSnackbar('Email Verify Failure')
       dispatch({
         type: 'GET_ERROR',
-        payload: null
+        payload: 'failure'
       })
-      userSignUp();
-      window.location.href = '/';
-    })
-    .catch(err => {
-      dispatch({
-        type: 'GET_ERROR',
-        payload: 'Verify failure'
-      })
-    })
-}
+    }
+  } catch (err) {
+    dispatch({
+      type: 'GET_ERROR',
+      payload: 'Verify failure'
+    });
+  }
+};
 
 export const generatePhoneToken = (data: any) => dispatch => {
   axios
     .post(`${API_VERIFY}/SendOtp`, data)
     .then(res => {
+      console.log(res)
       return true;
     })
     .catch(err => {
@@ -74,12 +118,12 @@ export const verifyPhone = (data: any) => dispatch => {
   axios
     .post(`${API_VERIFY}/VerifyOtp`, data)
     .then(res => {
-      dispatch({
-        type: 'GET_ERROR',
-        payload: null
-      })
-
-      return true;
+      if(res.data.msg == "approved") {
+        enqueueSnackbar('Cell Phone Verify Success!')
+        return;
+      } else {
+        enqueueSnackbar('Cell Phone Verify Failure!')
+      }
     })
     .catch(err => {
       dispatch({
@@ -100,7 +144,7 @@ export const editProfile = (id: string, token: string, data: any) => (dispatch) 
       dispatch({
         type: 'LOGIN_SUCCESS', payload: payload
       })
-      alert(res.data.message)
+      enqueueSnackbar(res.data.message)
     })
     .catch(err => {
       console.log(err.response.data)
@@ -112,7 +156,7 @@ export const signIn = (data: any) => (dispatch) => {
     .post(`${API_BASE}/sign-in`, data)
     .then(res => {
       console.log(res)
-      alert("Successfully sign in...")
+      enqueueSnackbar("Successfully sign in")
       setAuthToken(res.data.data.token)
       dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.data });
       window.location.href = '/';
@@ -139,10 +183,10 @@ export const changePassword = (data: any) => {
   axios
     .put(`${API_BASE}/change-password/${id}`, data)
     .then(res => {
-      alert(res.data)
+      enqueueSnackbar(res.data)
     })
     .catch(err => {
-      alert(err.response.data.error)
+      enqueueSnackbar(err.response.data.error)
     })
 }
 
@@ -160,16 +204,16 @@ export const getTypeUsers = (type: string) => dispatch => {
     })
 }
 
-const userSignUp = () => {
-  const newUser: any = useSelector((state: StateType) => state.auth.signUpInfo);
+// export const userSignUpFunc = (data: any) => {
+//   // const newUser: any = useSelector((state: StateType) => state.auth.signUpInfo);
 
-  axios
-    .post(`${API_BASE}/sign-up`, newUser)
-    .then(res => {
-      alert("Successfully sign up...")
-      window.location.href = '/user/sign-in';
-    })
-    .catch(err => {
-      console.log(err.response.data)
-    })
-}
+//   axios
+//     .post(`${API_BASE}/sign-up`, data)
+//     .then(res => {
+//       alert("Successfully sign up...")
+//       window.location.href = '/user/sign-in';
+//     })
+//     .catch(err => {
+//       console.log(err.response.data)
+//     })
+// }

@@ -52,15 +52,11 @@ function Hero() {
       return;
     }
 
-    let verifyToken = {
+    let data = {
+      ...signUpInfo,
       token: token
     }
-    dispatch(checkToken(verifyToken))
-
-    if(error != null ){
-      enqueueSnackbar(error)
-      return;
-    }
+    dispatch(checkToken(data))
   }
 
   const onChange = e => {

@@ -1,4 +1,12 @@
-import { useState, MouseEvent, ChangeEvent, useRef, useEffect, JSXElementConstructor, ReactElement } from 'react';
+import {
+  useState,
+  MouseEvent,
+  ChangeEvent,
+  useRef,
+  useEffect,
+  JSXElementConstructor,
+  ReactElement
+} from 'react';
 import {
   Box,
   Typography,
@@ -19,7 +27,7 @@ import {
   TextFieldProps,
   Select,
   MenuItem,
-  LinearProgress,
+  LinearProgress
 } from '@mui/material';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
@@ -30,8 +38,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
 import isEmpty from '../../../../validation/is-empty';
 
-import { addActiveShowing, getAllActiveShowing, getMyActiveShowing } from '../../../../actions/showingAction';
+import {
+  addActiveShowing,
+  getAllActiveShowing,
+  getMyActiveShowing
+} from '../../../../actions/showingAction';
 import ActiveShowingTable from './TableForm/ActiveShowingTable';
+import LoadingSpinner from '../../../../components/Loader';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -42,7 +55,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 const mapStyle = {
@@ -54,11 +67,10 @@ const mapStyle = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 function ActiveShowingTab() {
-
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -81,14 +93,17 @@ function ActiveShowingTab() {
 
   const dispatch: any = useDispatch();
 
-  const mapBounds: any = [[69.5335129, -153.8220681], [43.31166455, -56.44995099337655]];
-  const ZOOM_LEVEL = 9
+  const mapBounds: any = [
+    [69.5335129, -153.8220681],
+    [43.31166455, -56.44995099337655]
+  ];
+  const ZOOM_LEVEL = 9;
   const mapRef = useRef();
 
   const [position, setPosition] = useState({
     lat: '',
     lng: ''
-  })
+  });
 
   const [showingItem, setShowingItem] = useState({
     offerDate: null,
@@ -108,25 +123,30 @@ function ActiveShowingTab() {
     village: null,
     road: null,
     houseNumber: null,
-    listingAgent: null,
-  })
+    listingAgent: null
+  });
 
   const [addShow, setAddShow] = useState(true);
-  const [progress, setProgress] = useState(false)
+  const [progress, setProgress] = useState(false);
 
   const MapClickHandler = () => {
-    setProgress(true)
     let map = useMapEvents({
       click: async (e) => {
+        setProgress(true);
         const { lat, lng } = e.latlng;
         const api_key: string = 'AIzaSyBaBJNvo7jQhIkQKRFalCVeWDMVO-CXOD0';
-  
+
         try {
-          let url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2" + "&lat=" + lat + "&lon=" + lng;
-              
+          let url =
+            'https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+            '&lat=' +
+            lat +
+            '&lon=' +
+            lng;
+
           await fetch(url, {
-            method: "GET",
-            mode: "cors",
+            method: 'GET',
+            mode: 'cors'
             // headers: {
             //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
             // }
@@ -151,78 +171,80 @@ function ActiveShowingTab() {
                 lng: lng,
                 address: display_name,
                 code: place_id
-              })
+              });
 
-              console.log(showingItem)
+              console.log(showingItem);
             })
-            .catch(err => console.log(err))
+            .catch((err) => console.log(err));
 
           setPosition({
             lat: lat,
             lng: lng
-          })
+          });
 
-          setAddShow(false)
-          setProgress(false)
+          setAddShow(false);
+          setProgress(false);
         } catch (error) {
           console.log('Error', error);
         }
-      },
+      }
     });
-  
-    return null;
-  }
 
-  const onChange = e => {
+    return null;
+  };
+
+  const onChange = (e) => {
     setShowingItem({
       ...showingItem,
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
 
-  const onAddLocation = e => {
+  const onAddLocation = (e) => {
     e.preventDefault();
 
-    handleMapClose()
-  }
+    handleMapClose();
+  };
 
-  const onSaveActiveShowing = e => {
+  const onSaveActiveShowing = (e) => {
     e.preventDefault();
 
-    handleCloseConfirm()
+    handleCloseConfirm();
 
     if (isEmpty(showingItem.listing)) {
-      enqueueSnackbar('Please input listing.')
+      enqueueSnackbar('Please input listing.');
       return;
     }
     if (isEmpty(showingItem.address)) {
-      enqueueSnackbar('Please select or fill the current address.')
+      enqueueSnackbar('Please select or fill the current address.');
       return;
     }
     if (isEmpty(showingItem.code)) {
-      enqueueSnackbar('Please select or fill the new Postal code.')
+      enqueueSnackbar('Please select or fill the new Postal code.');
       return;
     }
     if (isEmpty(showingItem.price)) {
-      enqueueSnackbar('Please fill the Price.')
+      enqueueSnackbar('Please fill the Price.');
       return;
     }
     if (isEmpty(showingItem.lat)) {
-      enqueueSnackbar('Please select the Latitude.')
+      enqueueSnackbar('Please select the Latitude.');
       return;
     }
     if (isEmpty(showingItem.lng)) {
-      enqueueSnackbar('Please select the Longitude.')
+      enqueueSnackbar('Please select the Longitude.');
       return;
     }
     if (isEmpty(showingItem.listingAgent)) {
-      enqueueSnackbar("Please answer the question for 'Are you listing agent?'.")
+      enqueueSnackbar(
+        "Please answer the question for 'Are you listing agent?'."
+      );
       return;
     }
 
     const activeShowing = {
       userId: currentUser._id,
-      name: currentUser.firstName + " " + currentUser.lastName,
+      name: currentUser.firstName + ' ' + currentUser.lastName,
       country: showingItem.country,
       state: showingItem.state,
       city: showingItem.city,
@@ -241,25 +263,17 @@ function ActiveShowingTab() {
       listing: showingItem.listing,
       offerDate: showingItem.offerDate,
       listingAgent: showingItem.listingAgent
-    }
+    };
 
-    handleClose()
-    dispatch(addActiveShowing(activeShowing))
-  }
+    handleClose();
+    dispatch(addActiveShowing(activeShowing));
+  };
+
+  console.log({ progress });
 
   return (
     <Grid container spacing={3}>
-      
       <Grid item xs={12}>
-      {/* <Modal
-              open={progress}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={{ width: '100%' }}>
-                <LinearProgress />
-              </Box><br />
-            </Modal> */}
         <Modal
           open={mapOpen}
           onClose={handleMapClose}
@@ -271,19 +285,28 @@ function ActiveShowingTab() {
               OpenStreetMap
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              You can select your active area. And then you can click Add button.
+              You can select your active area. And then you can click Add
+              button.
             </Typography>
-            {/* <LinearProgress /> */}
-            <MapContainer bounds={mapBounds} style={{ height: '600px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
-              {/* <Marker
-                position={position}>
-              </Marker> */}
-              <Circle center={position} pathOptions={{color: 'red'}}>
-              </Circle>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <MapClickHandler />
-            </MapContainer><br />
-            
+
+            <MapContainer
+              bounds={mapBounds}
+              style={{ height: '600px', width: '100%' }}
+              zoom={ZOOM_LEVEL}
+              ref={mapRef}
+            >
+              {progress ? (
+                <LoadingSpinner loading={progress} />
+              ) : (
+                <>
+                  <MapClickHandler />
+                  <Circle center={position} pathOptions={{ color: 'red' }} />
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                </>
+              )}
+            </MapContainer>
+            <br />
+
             <Button
               startIcon={<UploadTwoToneIcon />}
               variant="contained"
@@ -294,6 +317,7 @@ function ActiveShowingTab() {
             </Button>
           </Box>
         </Modal>
+
         <Modal
           open={open}
           onClose={handleClose}
@@ -329,7 +353,13 @@ function ActiveShowingTab() {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={8} md={9}>
-                    <TextField name="listing" value={showingItem.listing} onChange={onChange} variant="outlined" style={{width: "50%"}} />
+                    <TextField
+                      name="listing"
+                      value={showingItem.listing}
+                      onChange={onChange}
+                      variant="outlined"
+                      style={{ width: '50%' }}
+                    />
                   </Grid>
                 </Box>
               </Grid>
@@ -346,7 +376,14 @@ function ActiveShowingTab() {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={8} md={9}>
-                    <TextField name="offerDate" type='date' value={showingItem.offerDate} onChange={onChange} variant="outlined" style={{width: "50%"}} />
+                    <TextField
+                      name="offerDate"
+                      type="date"
+                      value={showingItem.offerDate}
+                      onChange={onChange}
+                      variant="outlined"
+                      style={{ width: '50%' }}
+                    />
                   </Grid>
                 </Box>
               </Grid>
@@ -363,7 +400,13 @@ function ActiveShowingTab() {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={8} md={9}>
-                    <TextField name="address" value={showingItem.address} onChange={onChange} variant="outlined" style={{width: "50%"}} />
+                    <TextField
+                      name="address"
+                      value={showingItem.address}
+                      onChange={onChange}
+                      variant="outlined"
+                      style={{ width: '50%' }}
+                    />
                   </Grid>
                 </Box>
               </Grid>
@@ -380,7 +423,13 @@ function ActiveShowingTab() {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={8} md={9}>
-                    <TextField name="code" value={showingItem.code} onChange={onChange} variant="outlined" style={{width: "50%"}} />
+                    <TextField
+                      name="code"
+                      value={showingItem.code}
+                      onChange={onChange}
+                      variant="outlined"
+                      style={{ width: '50%' }}
+                    />
                   </Grid>
                 </Box>
               </Grid>
@@ -397,7 +446,13 @@ function ActiveShowingTab() {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={8} md={9}>
-                    <TextField name="unit" value={showingItem.unit} onChange={onChange} variant="outlined" style={{width: "50%"}} />
+                    <TextField
+                      name="unit"
+                      value={showingItem.unit}
+                      onChange={onChange}
+                      variant="outlined"
+                      style={{ width: '50%' }}
+                    />
                   </Grid>
                 </Box>
               </Grid>
@@ -414,7 +469,14 @@ function ActiveShowingTab() {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={8} md={9}>
-                    <TextField name="price" type='number' value={showingItem.price} onChange={onChange} variant="outlined" style={{width: "50%"}} />
+                    <TextField
+                      name="price"
+                      type="number"
+                      value={showingItem.price}
+                      onChange={onChange}
+                      variant="outlined"
+                      style={{ width: '50%' }}
+                    />
                   </Grid>
                 </Box>
               </Grid>
@@ -435,8 +497,8 @@ function ActiveShowingTab() {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       value={showingItem.listingAgent}
-                      name='listingAgent'
-                      style={{width: '50%'}}
+                      name="listingAgent"
+                      style={{ width: '50%' }}
                       label="*Listing Agent"
                       onChange={onChange}
                       defaultValue={'Yes'}
@@ -447,7 +509,7 @@ function ActiveShowingTab() {
                   </Grid>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={12}>
                 <Box
                   p={3}
@@ -459,10 +521,13 @@ function ActiveShowingTab() {
                     <SnackbarProvider
                       anchorOrigin={{
                         vertical: 'top',
-                        horizontal: 'center',
+                        horizontal: 'center'
                       }}
                     ></SnackbarProvider>
-                    <Button variant="contained" onClick={handleClickOpenConfirm}>
+                    <Button
+                      variant="contained"
+                      onClick={handleClickOpenConfirm}
+                    >
                       Add Active Showing
                     </Button>
                     <Dialog
@@ -507,7 +572,7 @@ function ActiveShowingTab() {
               <SnackbarProvider
                 anchorOrigin={{
                   vertical: 'bottom',
-                  horizontal: 'center',
+                  horizontal: 'center'
                 }}
               ></SnackbarProvider>
               <Button size="large" variant="outlined" onClick={handleOpen}>
@@ -515,9 +580,9 @@ function ActiveShowingTab() {
               </Button>
             </ListItem>
             <Divider component="li" />
-              <Grid container pt={3} pb={2} spacing={1}>
-                <ActiveShowingTable />
-              </Grid>
+            <Grid container pt={3} pb={2} spacing={1}>
+              <ActiveShowingTable />
+            </Grid>
           </List>
         </Card>
       </Grid>

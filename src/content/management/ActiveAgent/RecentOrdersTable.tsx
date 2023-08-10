@@ -133,10 +133,12 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Area</TableCell>
-              <TableCell align="right">View</TableCell>
+              <TableCell>Country</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Place</TableCell>
+              <TableCell>Postal Code</TableCell>
               <TableCell align="right">Listing</TableCell>
-              <TableCell align="right">Contact</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -176,24 +178,41 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.name}
+                      {cryptoOrder.country}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="View map" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.info.lighter
-                          },
-                          color: theme.palette.info.main
-                        }}
-                        color="inherit"
-                        size="small"
-                      >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.code}
+                    </Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Are you listing Agent?" arrow>
@@ -213,6 +232,20 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     </Tooltip>
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="View map" arrow>
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            background: theme.colors.info.lighter
+                          },
+                          color: theme.palette.info.main
+                        }}
+                        color="inherit"
+                        size="small"
+                      >
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Contact" arrow>
                       <IconButton
                         sx={{

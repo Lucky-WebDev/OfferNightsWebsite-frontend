@@ -152,16 +152,12 @@ function EditProfileTab() {
       enqueueSnackbar('Please fill in Cell Phone field.')
       return;
     }
+    enqueueSnackbar('Please check out your phone SMS')
     handlePhoneModalOpen()
     const data = {
       phone: updateProfile.cell
     }
     dispatch(generatePhoneToken(data))
-
-    if(error != null) {
-      enqueueSnackbar(error)
-      return;
-    }
   }
 
   const onVerifyPhoneClick = e => {
@@ -170,18 +166,7 @@ function EditProfileTab() {
       phone: updateProfile.cell,
       otp: phoneToken
     }
-    const flag = dispatch(verifyPhone(verifyInfo))
-
-    if(error != null) {
-      enqueueSnackbar(error)
-      return;
-    }
-
-    if(flag == true) {
-      enqueueSnackbar('Phone Verify Success!')
-      handlePhoneModalClose()
-      return;
-    }
+    dispatch(verifyPhone(verifyInfo))
   }
 
   return (

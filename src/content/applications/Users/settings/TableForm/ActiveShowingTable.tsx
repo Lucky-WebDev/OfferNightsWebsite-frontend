@@ -104,7 +104,9 @@ function ActiveShowingTable() {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
+              <TableCell>Country</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Place</TableCell>
               <TableCell>Postal Code</TableCell>
               <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Price</TableCell>
@@ -150,7 +152,29 @@ function ActiveShowingTable() {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.address}
+                      {cryptoOrder.country}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
                     </Typography>
                   </TableCell>
                   <TableCell>
