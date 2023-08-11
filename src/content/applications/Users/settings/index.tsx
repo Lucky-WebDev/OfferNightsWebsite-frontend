@@ -16,6 +16,7 @@ import { StateType } from '../../../../reducer/dataType';
 import ActiveShowingTab from './ActiveShowingTab';
 import { getMyActiveShowing } from '../../../../actions/showingAction';
 import BillingTab from './BillingTab';
+import { enqueueSnackbar } from 'notistack';
 
 const TabsWrapper = styled(Tabs)(
   () => `
@@ -28,6 +29,8 @@ const TabsWrapper = styled(Tabs)(
 function ManagementUserSettings() {
   const [currentTab, setCurrentTab] = useState<string>('activity');
 
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+
   const tabs = [
     { value: 'activity', label: 'Activity' },
     { value: 'edit_profile', label: 'Edit Profile' },
@@ -39,12 +42,17 @@ function ManagementUserSettings() {
   ];
 
   const handleTabsChange = (event: ChangeEvent<{}>, value: string): void => {
-    setCurrentTab(value);
+    if(currentUser.status == "inactive") {
+      setCurrentTab('edit_profile');
+      enqueueSnackbar("Please verify your cell phone")
+      return;
+    } else {
+      setCurrentTab(value);
+      return;
+    }
   };
 
   const dispatch: any = useDispatch()
-
-  const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
   dispatch(getActiveArea(currentUser._id))
   dispatch(getMyActiveShowing(currentUser._id))
@@ -84,7 +92,6 @@ function ManagementUserSettings() {
             {currentTab === 'edit_profile' && <EditProfileTab />}
             {currentTab === 'farming_area' && <FarmAreaTab />}
             {currentTab === 'active_showing' && <ActiveShowingTab />}
-            {/* {currentTab === 'notifications' && <NotificationsTab />} */}
             {currentTab === 'security' && <SecurityTab />}
             {currentTab === 'billing' && <BillingTab />}
           </Grid>

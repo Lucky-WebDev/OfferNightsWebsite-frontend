@@ -38,7 +38,6 @@ function Hero() {
     firstName: '',
     middleName: '',
     lastName: '',
-    cell: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -82,10 +81,6 @@ function Hero() {
     }
     if (isEmpty(profile.email)) {
       enqueueSnackbar('Please fill the email.')
-      return;
-    }
-    if (isEmpty(profile.cell)) {
-      enqueueSnackbar('Please fill the cell.')
       return;
     }
     if (isEmpty(profile.password)) {
@@ -181,7 +176,6 @@ function Hero() {
               Contact Information
           </TypographyH2>
           <Stack>
-              <TextField label="*Cell" name='cell' value={profile.cell} type='number' variant="outlined" onChange={onChange} /><br />
               <TextField label="*Email" name='email' value={profile.email} type='email' variant="outlined" onChange={onChange} /><br />
           </Stack>
           

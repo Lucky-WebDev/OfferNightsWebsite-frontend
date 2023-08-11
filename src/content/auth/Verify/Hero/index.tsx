@@ -64,7 +64,7 @@ function Hero() {
   }
 
   const onResendClick = e => {
-    resendVerificationCode(signUpInfo.email)
+    dispatch(signUp(signUpInfo))
   }
   
 

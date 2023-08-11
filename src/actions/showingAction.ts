@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { enqueueSnackbar } from 'notistack';
 
 const API_BASE: string = 'http://localhost:5000/showing';
 
@@ -6,7 +7,7 @@ export const addActiveShowing = (data: any) => (dispatch) => {
   axios
     .post(`${API_BASE}/add-active-showing`, data)
     .then(res => {
-        alert("ADD_ACTIVE_SHOWING")
+        enqueueSnackbar("ADD_ACTIVE_SHOWING")
         dispatch({
             type: 'GET_ACTIVE_SHOWING',
             payload: res.data.data

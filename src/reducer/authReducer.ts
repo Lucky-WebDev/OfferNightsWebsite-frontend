@@ -11,7 +11,8 @@ const initialState = {
     allAgents: [],
     allActiveShowing: [],
     myActiveShowing: [],
-    error: null
+    error: null,
+    phoneStatus: false
 };
 
 type ActionType = {
@@ -29,7 +30,8 @@ type StateType = {
     allAgents: Array<any>;
     allActiveShowing: Array<any>;
     myActiveShowing: Array<any>;
-    error: null
+    error: null;
+    phoneStatus: boolean;
 };
 
 const authReducer = (state: StateType = initialState, action: ActionType = { type: '', payload: null }) => {
@@ -92,6 +94,16 @@ const authReducer = (state: StateType = initialState, action: ActionType = { typ
             return {
                 ...state,
                 error: action.payload
+            }
+        case Types.SET_PHONE_STATUS:
+            return {
+                ...state,
+                phoneStatus: action.payload
+            }
+        case Types.UPDATE_PHONE:
+            return {
+                ...state,
+                user: action.payload
             }
         default:
             return state;

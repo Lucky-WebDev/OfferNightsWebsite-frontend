@@ -86,10 +86,7 @@ export const checkToken = (data: any) => async dispatch => {
       window.location.href = '/user/sign-in'
     } else {
       enqueueSnackbar('Email Verify Failure')
-      dispatch({
-        type: 'GET_ERROR',
-        payload: 'failure'
-      })
+      return
     }
   } catch (err) {
     dispatch({
@@ -114,23 +111,27 @@ export const generatePhoneToken = (data: any) => dispatch => {
     })
 }
 
-export const verifyPhone = (data: any) => dispatch => {
-  axios
-    .post(`${API_VERIFY}/VerifyOtp`, data)
-    .then(res => {
-      if(res.data.msg == "approved") {
-        enqueueSnackbar('Cell Phone Verify Success!')
-        return;
-      } else {
-        enqueueSnackbar('Cell Phone Verify Failure!')
-      }
-    })
-    .catch(err => {
+export const verifyPhone = (id: string, data: any) => async dispatch => {
+  try {
+    const res = await axios.post(`${API_VERIFY}/VerifyOtp`, data);
+
+    if(res.data.msg == 'approved') {
+      enqueueSnackbar('Cell Phone Verify Success!')
+      
+      let res = await axios.post(`${API_BASE}/add-phone/${id}`, data)
       dispatch({
-        type: 'GET_ERROR',
-        payload: 'Verify failure'
+        type: 'UPDATE_PHONE', payload: res.data.profile
       })
-    })
+    } else {
+      enqueueSnackbar('Cell Phone Verify Failure')
+      return
+    }
+  } catch (err) {
+    dispatch({
+      type: 'GET_ERROR',
+      payload: 'Verify failure'
+    });
+  }
 }
 
 export const editProfile = (id: string, token: string, data: any) => (dispatch) => {
@@ -147,7 +148,7 @@ export const editProfile = (id: string, token: string, data: any) => (dispatch) 
       enqueueSnackbar(res.data.message)
     })
     .catch(err => {
-      console.log(err.response.data)
+      console.log(err.response)
     })
 }
 
@@ -203,17 +204,3 @@ export const getTypeUsers = (type: string) => dispatch => {
       console.log(err.response.data)
     })
 }
-
-// export const userSignUpFunc = (data: any) => {
-//   // const newUser: any = useSelector((state: StateType) => state.auth.signUpInfo);
-
-//   axios
-//     .post(`${API_BASE}/sign-up`, data)
-//     .then(res => {
-//       alert("Successfully sign up...")
-//       window.location.href = '/user/sign-in';
-//     })
-//     .catch(err => {
-//       console.log(err.response.data)
-//     })
-// }

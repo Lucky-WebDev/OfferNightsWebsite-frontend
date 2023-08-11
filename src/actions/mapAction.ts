@@ -1,5 +1,6 @@
 import axios from 'axios';
 import setAuthToken from '../api/setAuthToken';
+import { enqueueSnackbar } from 'notistack';
 
 const API_BASE: string = 'http://localhost:5000/map';
 
@@ -7,6 +8,7 @@ export const addLocation = (id: string, data: any) => (dispatch) => {
   axios
     .post(`${API_BASE}/add-locations/${id}`, data)
     .then(res => {
+      enqueueSnackbar('You added new farming area successfully.')
       dispatch({
         type: 'GET_FARMING_AREA',
         payload: res.data.data

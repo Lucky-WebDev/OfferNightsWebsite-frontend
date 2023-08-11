@@ -311,7 +311,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/faq"}
+                  to={isAuthenticated == false ? "/user/sign-in" : "/management/faq"}
                   startIcon={<RedeemTwoToneIcon />}
                 >
                   FAQ
@@ -322,7 +322,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/contact-us"}
+                  to={isAuthenticated == false ? "/user/sign-in" : "/management/contact"}
                   startIcon={<SettingsTwoToneIcon />}
                 >
                   Contact Us

@@ -10,6 +10,7 @@ export interface StateType {
         allActiveShowing: Array<any>;
         myActiveShowing: Array<any>;
         error: null;
+        phoneStatus: boolean;
     }
     error: {
         errors: null

@@ -15,7 +15,8 @@ import {
   DialogTitle
 } from '@mui/material';
 
-import { MapContainer, TileLayer, Marker, useMap, Circle, useMapEvents, Tooltip } from 'react-leaflet'
+import L from 'leaflet'
+import { MapContainer, TileLayer, Marker, useMap, Polygon, Popup, Circle, useMapEvents, Tooltip, CircleMarker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import { styled } from '@mui/material/styles';
@@ -27,6 +28,14 @@ import { useState, useRef, lazy, Suspense, useMemo } from 'react';
 import SuspenseLoader from '../../../../components/SuspenseLoader';
 
 import { addLocation, getActiveArea } from '../../../../actions/mapAction';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+})
 
 const Loader = (Component) => (props) =>
   (
@@ -214,6 +223,16 @@ function FarmAreaTab() {
 
   const mapBounds: any = [[69.5335129, -153.8220681], [43.31166455, -56.44995099337655]];
 
+  const polygon = [
+    [
+      [28.35, -81.56],
+      [28.35, -71.55],
+      [38.36, -71.55],
+      [38.36, -81.56],
+      [28.35, -81.56],
+    ]
+  ]
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -249,13 +268,12 @@ function FarmAreaTab() {
               </Typography>
 
               <MapContainer bounds={mapBounds} style={{ height: '600px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
-                {/* <Marker
-                  position={position}>
-                </Marker> */}
-                <Circle center={position} pathOptions={{color: 'red'}} 
-                // radius={200}
-                >
-                </Circle>
+                <Marker position={position}>
+                  <Popup>
+                    {mapInfo.address }
+                  </Popup>
+                </Marker>
+                <Polygon positions={polygon} />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
               </MapContainer><br />

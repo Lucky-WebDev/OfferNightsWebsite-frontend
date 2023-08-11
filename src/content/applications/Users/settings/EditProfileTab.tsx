@@ -47,25 +47,12 @@ const style = {
 function EditProfileTab() {
   // const navigate: any = useNavigate();
   const dispatch: any = useDispatch();
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const eventHandlers = useMemo(
-    () => ({
-      click() {
-        alert("sdfsdf")
-      },
-    }),
-    [],
-  )
+  const currentUser: any = useSelector((state: StateType) => state.auth.user)
 
   const profile: UserType = useSelector((state: StateType) => state.auth.user);
   const token: string = useSelector((state: StateType) => state.auth.token)
-  const error: any = useSelector((state: StateType) => state.auth.error);
 
-  const [phoneOk, setPhoneOk] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState(profile.cell)
   const [phoneToken, setPhoneToken] = useState('');
   const [phoneModalOpen, setPhoneModalOpen] = useState(false);
   const handlePhoneModalOpen = () => setPhoneModalOpen(true);
@@ -78,33 +65,11 @@ function EditProfileTab() {
     pictures: true,
   })
 
-  const onSaveClick = e => {
-    e.preventDefault();
-    
-    if(updateProfile.cell != null && phoneOk == false) {
-      enqueueSnackbar('You should verify your phone number.')
-      return;
-    } 
-    
-    setUpdatePossible({
-      ...updatePossible,
-      personal: true
-    })
-
-    dispatch(editProfile(profile._id, token, updateProfile));
-  }
-
-  const onCancelClick = e => {
-    e.preventDefault();
-    // navigate('/profile/details')
-  }
-
   const [updateProfile, setUpdateProfile] = useState({
     type: profile.type,
     firstName: profile.firstName,
     middleName: profile.middleName,
     lastName: profile.lastName,
-    cell: profile.cell,
     tradeName: profile.tradeName,
     brokerageName: profile.brokerageName,
     brokerageCity: profile.brokerageCity,
@@ -112,6 +77,32 @@ function EditProfileTab() {
     brokerageAddress: profile.brokerageAddress,
     brokeragePhone: profile.brokeragePhone,
   })
+
+  const onSaveClick = e => {
+    e.preventDefault();
+
+    if(currentUser.status == 'inactive') {
+      enqueueSnackbar('You should verify your phone number.')
+      return;
+    } else {
+      setUpdatePossible({
+        ...updatePossible,
+        personal: true
+      })
+  
+      dispatch(editProfile(profile._id, token, updateProfile));
+    }
+  }
+
+  const onPhoneNumberChange = e => {
+    setPhoneNumber(e.target.value)
+  }
+
+  const onCancelClick = e => {
+    e.preventDefault();
+    // navigate('/profile/details')
+  }
+
 
   const onChange = e => {
     setUpdateProfile({
@@ -148,14 +139,14 @@ function EditProfileTab() {
   const onTokenGenerateClick = e => {
     e.preventDefault();
 
-    if(isEmpty(updateProfile.cell)) {
+    if(isEmpty(phoneNumber)) {
       enqueueSnackbar('Please fill in Cell Phone field.')
       return;
     }
-    enqueueSnackbar('Please check out your phone SMS')
     handlePhoneModalOpen()
+    enqueueSnackbar('Please check out your phone SMS')
     const data = {
-      phone: updateProfile.cell
+      phone: phoneNumber
     }
     dispatch(generatePhoneToken(data))
   }
@@ -163,14 +154,52 @@ function EditProfileTab() {
   const onVerifyPhoneClick = e => {
     e.preventDefault();
     const verifyInfo = {
-      phone: updateProfile.cell,
+      phone: phoneNumber,
       otp: phoneToken
     }
-    dispatch(verifyPhone(verifyInfo))
+    handlePhoneModalClose()
+    dispatch(verifyPhone(currentUser._id, verifyInfo))
   }
 
   return (
     <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Card>
+          <Box
+            p={3}
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box>
+              <Typography variant="h4" gutterBottom>
+                Contact Information
+              </Typography>
+              <Typography variant="subtitle2">
+                Manage details related to your contact information
+              </Typography>
+            </Box>
+          </Box>
+          <Divider />
+          <CardContent sx={{ p: 4 }}>
+            <Typography variant="subtitle2">
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pt={1.5}>
+                    *Cell Phone( +1 ):
+                  </Box><br />
+                  <Button variant="text" onClick={onTokenGenerateClick} startIcon={<DownloadDoneOutlinedIcon />}>
+                    Verify
+                  </Button><br />
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <TextField type='number' name="phoneNumber" value={phoneNumber} onChange={onPhoneNumberChange} variant="outlined" />
+                </Grid>
+              </Grid>
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
       <Grid item xs={12}>
         <Card>
           <Box
@@ -287,43 +316,7 @@ function EditProfileTab() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <Box
-            p={3}
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Box>
-              <Typography variant="h4" gutterBottom>
-                Contact Information
-              </Typography>
-              <Typography variant="subtitle2">
-                Manage details related to your contact information
-              </Typography>
-            </Box>
-          </Box>
-          <Divider />
-          <CardContent sx={{ p: 4 }}>
-            <Typography variant="subtitle2">
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                  <Box pr={3} pt={1.5}>
-                    *Cell Phone:
-                  </Box><br />
-                  <Button variant="text" onClick={onTokenGenerateClick} startIcon={<DownloadDoneOutlinedIcon />}>
-                    Verify
-                  </Button><br />
-                </Grid>
-                <Grid item xs={12} sm={8} md={9}>
-                  <TextField type='number' name="cell" disabled={updatePossible.personal} value={updateProfile.cell} onChange={onChange} variant="outlined" />
-                </Grid>
-              </Grid>
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+      
       {profile.type == 'agent' ? (
         <Grid item xs={12}>
         <Card>

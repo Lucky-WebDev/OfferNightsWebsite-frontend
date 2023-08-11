@@ -43,6 +43,10 @@ const ActiveShowingAgents = Loader(
   lazy(() => import('./content/management/ActiveShowingAgents'))
 );
 
+const Contact = Loader(
+  lazy(() => import('./content/management/Contact'))
+);
+
 const UserProfile = Loader(
   lazy(() => import('./content/applications/Users/profile'))
 );
@@ -221,6 +225,10 @@ const routes: RouteObject[] = [
       {
         path: 'sellers',
         element: <Seller />
+      },
+      {
+        path: 'contact',
+        element: <Contact />
       },
       {
         path: 'profile',
