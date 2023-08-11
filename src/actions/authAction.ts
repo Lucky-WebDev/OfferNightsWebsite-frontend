@@ -38,25 +38,6 @@ export const resendVerificationCode = (data: string) => {
     })
 }
 
-// export const checkToken = (token: any) => dispatch => {
-//   axios
-//     .post(`${API_VERIFY}/check-token`, token)
-//     .then(res => {
-//       dispatch({
-//         type: 'GET_ERROR',
-//         payload: null
-//       })
-//       userSignUp();
-//       window.location.href = '/';
-//     })
-//     .catch(err => {
-//       dispatch({
-//         type: 'GET_ERROR',
-//         payload: 'Verify failure'
-//       })
-//     })
-// }
-
 export const checkToken = (data: any) => async dispatch => {
   try {
     const token: any = {
