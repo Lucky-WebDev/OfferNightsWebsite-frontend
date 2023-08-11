@@ -29,6 +29,7 @@ import {
   MenuItem,
   LinearProgress
 } from '@mui/material';
+import L from 'leaflet'
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
 
@@ -45,6 +46,14 @@ import {
 } from '../../../../actions/showingAction';
 import ActiveShowingTable from './TableForm/ActiveShowingTable';
 import LoadingSpinner from '../../../../components/Loader';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../../config/marker/showing-marker.png'),
+  iconUrl: require('../../../../config/marker/showing-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+})
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -89,9 +98,11 @@ function ActiveShowingTab() {
     setOpenConfirm(false);
   };
 
+  const dispatch: any = useDispatch();
+
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
-  const dispatch: any = useDispatch();
+  dispatch(getMyActiveShowing(currentUser._id))
 
   const mapBounds: any = [
     [69.5335129, -153.8220681],

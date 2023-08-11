@@ -16,6 +16,8 @@ import { StateType } from '../../../../reducer/dataType';
 import ActiveShowingTab from './ActiveShowingTab';
 import { getMyActiveShowing } from '../../../../actions/showingAction';
 import BillingTab from './BillingTab';
+import SellerAreaTab from './SellerAreaTab';
+import BuyerAreaTab from './BuyerAreaTab';
 import { enqueueSnackbar } from 'notistack';
 
 const TabsWrapper = styled(Tabs)(
@@ -67,11 +69,6 @@ function ManagementUserSettings() {
     }
   };
 
-  const dispatch: any = useDispatch()
-
-  dispatch(getActiveArea(currentUser._id))
-  dispatch(getMyActiveShowing(currentUser._id))
-
   return (
     <>
       <Helmet>
@@ -118,6 +115,8 @@ function ManagementUserSettings() {
             {currentTab === 'active_showing' && <ActiveShowingTab />}
             {currentTab === 'security' && <SecurityTab />}
             {currentTab === 'billing' && <BillingTab />}
+            {currentTab === 'seller_area' && <SellerAreaTab />}
+            {currentTab === 'buyer_area' && <BuyerAreaTab />}
           </Grid>
         </Grid>
       </Container>

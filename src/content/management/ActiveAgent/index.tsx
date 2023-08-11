@@ -23,8 +23,6 @@ function ApplicationsTransactions() {
     lng: null
   })
 
-  // dispatch(getAllAgents())
-
   useEffect(() => {
     dispatch(getAllAgents())
   }, [])

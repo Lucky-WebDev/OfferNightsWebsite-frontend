@@ -11,6 +11,10 @@ const initialState = {
     allAgents: [],
     allActiveShowing: [],
     myActiveShowing: [],
+    mySellerInfo: [],
+    allSellerInfo: [],
+    myBuyerInfo: [],
+    allBuyerInfo: [],
     error: null,
     phoneStatus: false
 };
@@ -30,6 +34,10 @@ type StateType = {
     allAgents: Array<any>;
     allActiveShowing: Array<any>;
     myActiveShowing: Array<any>;
+    mySellerInfo: Array<any>,
+    allSellerInfo: Array<any>,
+    myBuyerInfo: Array<any>,
+    allBuyerInfo: Array<any>,
     error: null;
     phoneStatus: boolean;
 };
@@ -104,6 +112,26 @@ const authReducer = (state: StateType = initialState, action: ActionType = { typ
             return {
                 ...state,
                 user: action.payload
+            }
+        case Types.GET_MY_SELLER_INFO:
+            return {
+                ...state,
+                mySellerInfo: action.payload
+            }
+        case Types.GET_ALL_SELLER_INFO:
+            return {
+                ...state,
+                allSellerInfo: action.payload
+            }
+        case Types.GET_MY_BUYER_INFO:
+            return {
+                ...state,
+                myBuyerInfo: action.payload
+            }
+        case Types.GET_ALL_BUYER_INFO:
+            return {
+                ...state,
+                allBuyerInfo: action.payload
             }
         default:
             return state;

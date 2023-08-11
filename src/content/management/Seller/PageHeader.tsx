@@ -11,10 +11,10 @@ function PageHeader() {
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
-          Seller
+          Sellers
         </Typography>
         <Typography variant="subtitle2">
-          {currentUser.firstName + ' ' + currentUser.lastName}, these are all sellers
+          {currentUser.firstName + ' ' + currentUser.lastName}, these are all sellers.
         </Typography>
       </Grid>
       {/* <Grid item>

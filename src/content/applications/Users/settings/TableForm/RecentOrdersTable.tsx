@@ -75,10 +75,10 @@ function RecentOrdersTable() {
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
-              <TableCell>Country</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Place</TableCell>
               <TableCell>Postal Code</TableCell>
+              <TableCell>Radius</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -98,17 +98,6 @@ function RecentOrdersTable() {
                       noWrap
                     >
                       {index+1}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {area.country}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -142,6 +131,17 @@ function RecentOrdersTable() {
                       noWrap
                     >
                       {area.code}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {area.radius} Km
                     </Typography>
                   </TableCell>
                   <TableCell align="right">

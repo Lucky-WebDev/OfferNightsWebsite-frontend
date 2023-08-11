@@ -1,50 +1,56 @@
 import {
-    useState,
-    MouseEvent,
-    ChangeEvent,
-    useRef,
-    useEffect,
-    JSXElementConstructor,
-    ReactElement
-  } from 'react';
-  import {
-    Box,
-    Typography,
-    Card,
-    Grid,
-    ListItem,
-    List,
-    ListItemText,
-    Divider,
-    Button,
-    TextField,
-    Modal,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    DialogContentText,
-    TextFieldProps,
-    Select,
-    MenuItem,
-    LinearProgress
-  } from '@mui/material';
-  import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
-  import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
-  
-  import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-  import { Circle, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
-  import { useSelector, useDispatch } from 'react-redux';
-  import { StateType } from '../../../../reducer/dataType';
-  import isEmpty from '../../../../validation/is-empty';
-  
-  import {
-    addActiveShowing,
-    getAllActiveShowing,
-    getMyActiveShowing
-  } from '../../../../actions/showingAction';
-  import ActiveShowingTable from './TableForm/ActiveShowingTable';
-  import LoadingSpinner from '../../../../components/Loader';
+  useState,
+  MouseEvent,
+  ChangeEvent,
+  useRef,
+  useEffect,
+  JSXElementConstructor,
+  ReactElement
+} from 'react';
+import {
+  Box,
+  Typography,
+  Card,
+  Grid,
+  ListItem,
+  List,
+  ListItemText,
+  Divider,
+  Button,
+  TextField,
+  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  TextFieldProps,
+  Select,
+  MenuItem,
+  LinearProgress
+} from '@mui/material';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
+
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { Circle, MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
+import { useSelector, useDispatch } from 'react-redux';
+import { StateType } from '../../../../reducer/dataType';
+import isEmpty from '../../../../validation/is-empty';
+
+import LoadingSpinner from '../../../../components/Loader';
+
+import L from 'leaflet';
+import { addSellerLocation, getMySellerLocation } from '../../../../actions/sellerAction';
+import SellerLocationTable from './TableForm/SellerLocationTable';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../../config/marker/seller-marker.png'),
+  iconUrl: require('../../../../config/marker/seller-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+})
   
   const style = {
     position: 'absolute' as 'absolute',
@@ -92,6 +98,7 @@ import {
     const currentUser: any = useSelector((state: StateType) => state.auth.user);
   
     const dispatch: any = useDispatch();
+    dispatch(getMySellerLocation(currentUser._id))
   
     const mapBounds: any = [
       [69.5335129, -153.8220681],
@@ -220,7 +227,7 @@ import {
         return;
       }
   
-      const buyerRequest = {
+      const sellerRequest = {
         userId: currentUser._id,
         name: currentUser.firstName + ' ' + currentUser.lastName,
         country: sellerInfo.country,
@@ -244,7 +251,7 @@ import {
       };
   
       handleClose();
-    //   dispatch(addBuyerRequest(buyerRequest));
+      dispatch(addSellerLocation(sellerRequest));
     };
   
     console.log({ progress });
@@ -278,6 +285,11 @@ import {
                 ) : (
                   <>
                     <MapClickHandler />
+                    <Marker position={position}>
+                      <Popup>
+                        {sellerInfo.address}
+                      </Popup>
+                    </Marker>
                     <Circle center={position} pathOptions={{ color: 'red' }} />
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   </>
@@ -379,7 +391,7 @@ import {
                   >
                     <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                       <Box pr={3} pt={1.5}>
-                        *Are you working with a realtor? :
+                        *Are you working with a realtor?:
                       </Box>
                     </Grid>
                     <Grid item xs={12} sm={8} md={9}>
@@ -543,8 +555,8 @@ import {
                     variant: 'subtitle2',
                     lineHeight: 1
                   }}
-                  primary="Add Area for buying"
-                  secondary="You can add your area for buying."
+                  primary="Add Area for selling"
+                  secondary="You can add your area for selling."
                 />
                 <SnackbarProvider
                   anchorOrigin={{
@@ -553,12 +565,12 @@ import {
                   }}
                 ></SnackbarProvider>
                 <Button size="large" variant="outlined" onClick={handleOpen}>
-                  <AddLocationAltIcon /> Buying Area
+                  <AddLocationAltIcon /> Selling Area
                 </Button>
               </ListItem>
               <Divider component="li" />
               <Grid container pt={3} pb={2} spacing={1}>
-                <ActiveShowingTable />
+                <SellerLocationTable />
               </Grid>
             </List>
           </Card>

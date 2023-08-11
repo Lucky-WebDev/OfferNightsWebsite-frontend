@@ -7,11 +7,14 @@ import Footer from '../../../components/Footer';
 import RecentOrders from './RecentOrders';
 import { useDispatch } from 'react-redux';
 import { getAllActiveShowing } from '../../../actions/showingAction';
+import { useEffect } from 'react';
 
 function ApplicationsTransactions() {
   const dispatch: any = useDispatch();
 
-  dispatch(getAllActiveShowing());
+  useEffect(() => {
+    dispatch(getAllActiveShowing());
+  }, [])
 
   return (
     <>

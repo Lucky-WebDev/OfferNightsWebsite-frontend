@@ -1,50 +1,62 @@
 import {
-    useState,
-    MouseEvent,
-    ChangeEvent,
-    useRef,
-    useEffect,
-    JSXElementConstructor,
-    ReactElement
-  } from 'react';
-  import {
-    Box,
-    Typography,
-    Card,
-    Grid,
-    ListItem,
-    List,
-    ListItemText,
-    Divider,
-    Button,
-    TextField,
-    Modal,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    DialogContentText,
-    TextFieldProps,
-    Select,
-    MenuItem,
-    LinearProgress
-  } from '@mui/material';
-  import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
-  import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
-  
-  import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-  import { Circle, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
-  import { useSelector, useDispatch } from 'react-redux';
-  import { StateType } from '../../../../reducer/dataType';
-  import isEmpty from '../../../../validation/is-empty';
-  
-  import {
-    addActiveShowing,
-    getAllActiveShowing,
-    getMyActiveShowing
-  } from '../../../../actions/showingAction';
-  import ActiveShowingTable from './TableForm/ActiveShowingTable';
-  import LoadingSpinner from '../../../../components/Loader';
+  useState,
+  MouseEvent,
+  ChangeEvent,
+  useRef,
+  useEffect,
+  JSXElementConstructor,
+  ReactElement
+} from 'react';
+import {
+  Box,
+  Typography,
+  Card,
+  Grid,
+  ListItem,
+  List,
+  ListItemText,
+  Divider,
+  Button,
+  TextField,
+  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  TextFieldProps,
+  Select,
+  MenuItem,
+  LinearProgress
+} from '@mui/material';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
+
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { Circle, MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
+import { useSelector, useDispatch } from 'react-redux';
+import { StateType } from '../../../../reducer/dataType';
+import isEmpty from '../../../../validation/is-empty';
+
+import {
+  addActiveShowing,
+  getAllActiveShowing,
+  getMyActiveShowing
+} from '../../../../actions/showingAction';
+import ActiveShowingTable from './TableForm/ActiveShowingTable';
+import LoadingSpinner from '../../../../components/Loader';
+
+import L from 'leaflet';
+import { addBuyerLocation, getMyBuyerLocation } from '../../../../actions/buyerAction';
+import BuyerLocationTable from './TableForm/BuyerLocationTable';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../../config/marker/buyer-marker.png'),
+  iconUrl: require('../../../../config/marker/buyer-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+})
   
   const style = {
     position: 'absolute' as 'absolute',
@@ -92,6 +104,8 @@ import {
     const currentUser: any = useSelector((state: StateType) => state.auth.user);
   
     const dispatch: any = useDispatch();
+
+    dispatch(getMyBuyerLocation(currentUser._id))
   
     const mapBounds: any = [
       [69.5335129, -153.8220681],
@@ -264,7 +278,7 @@ import {
       };
   
       handleClose();
-    //   dispatch(addBuyerRequest(buyerRequest));
+      dispatch(addBuyerLocation(buyerRequest));
     };
   
     console.log({ progress });
@@ -297,6 +311,11 @@ import {
                   <LoadingSpinner loading={progress} />
                 ) : (
                   <>
+                    <Marker position={position}>
+                      <Popup>
+                        {buyerInfo.address }
+                      </Popup>
+                    </Marker>
                     <MapClickHandler />
                     <Circle center={position} pathOptions={{ color: 'red' }} />
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -434,7 +453,7 @@ import {
                     <Grid item xs={12} sm={8} md={9}>
                       <Select
                         labelId="demo-simple-select-label"
-                        id="demo-simple-select"
+                        id="outlined-basic"
                         value={buyerInfo.typeHouse}
                         name="typeHouse"
                         style={{ width: '50%' }}
@@ -442,9 +461,9 @@ import {
                         onChange={onChange}
                         defaultValue={'Yes'}
                       >
-                        <MenuItem value={'Condo'}>Yes</MenuItem>
-                        <MenuItem value={'Townhouse'}>No</MenuItem>
-                        <MenuItem value={'House'}>No</MenuItem>
+                        <MenuItem value={'Condo'}>Condo</MenuItem>
+                        <MenuItem value={'Townhouse'}>Townhouse</MenuItem>
+                        <MenuItem value={'House'}>House</MenuItem>
                       </Select>
                     </Grid>
                   </Box>
@@ -597,7 +616,7 @@ import {
               </ListItem>
               <Divider component="li" />
               <Grid container pt={3} pb={2} spacing={1}>
-                <ActiveShowingTable />
+                <BuyerLocationTable />
               </Grid>
             </List>
           </Card>

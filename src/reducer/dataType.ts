@@ -9,6 +9,10 @@ export interface StateType {
         allAgents: Array<any>;
         allActiveShowing: Array<any>;
         myActiveShowing: Array<any>;
+        mySellerInfo: Array<any>;
+        allSellerInfo: Array<any>;
+        myBuyerInfo: Array<any>;
+        allBuyerInfo: Array<any>;
         error: null;
         phoneStatus: boolean;
     }

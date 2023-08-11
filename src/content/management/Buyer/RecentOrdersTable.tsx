@@ -22,50 +22,32 @@ import {
   MenuItem,
   Typography,
   useTheme,
-  CardHeader
+  CardHeader,
+  TextField
 } from '@mui/material';
 
 import Label from '../../../components/Label';
 import { CryptoOrder, CryptoOrderStatus } from '../../../models/crypto_order';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import SignalWifiStatusbar4BarIcon from '@mui/icons-material/SignalWifiStatusbar4Bar';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+import SignalWifiStatusbarConnectedNoInternet4Icon from '@mui/icons-material/SignalWifiStatusbarConnectedNoInternet4';
 import BulkActions from './BulkActions';
+import { ContactMailOutlined } from '@mui/icons-material';
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: CryptoOrder[];
+  cryptoOrders: any;
 }
 
 interface Filters {
   status?: CryptoOrderStatus;
 }
 
-const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
-  const map = {
-    failed: {
-      text: 'Failed',
-      color: 'error'
-    },
-    completed: {
-      text: 'Completed',
-      color: 'success'
-    },
-    pending: {
-      text: 'Pending',
-      color: 'warning'
-    }
-  };
-
-  const { text, color }: any = map[cryptoOrderStatus];
-
-  return <Label color={color}>{text}</Label>;
-};
-
 const applyFilters = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: any,
   filters: Filters
-): CryptoOrder[] => {
+): any => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
@@ -78,10 +60,10 @@ const applyFilters = (
 };
 
 const applyPagination = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: any,
   page: number,
   limit: number
-): CryptoOrder[] => {
+): any => {
   return cryptoOrders && cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
@@ -115,45 +97,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     }
   ];
 
-  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    let value = null;
-
-    if (e.target.value !== 'all') {
-      value = e.target.value;
-    }
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      status: value
-    }));
-  };
-
-  const handleSelectAllCryptoOrders = (
-    event: ChangeEvent<HTMLInputElement>
-  ): void => {
-    setSelectedCryptoOrders(
-      event.target.checked
-        ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
-        : []
-    );
-  };
-
-  const handleSelectOneCryptoOrder = (
-    event: ChangeEvent<HTMLInputElement>,
-    cryptoOrderId: string
-  ): void => {
-    if (!selectedCryptoOrders.includes(cryptoOrderId)) {
-      setSelectedCryptoOrders((prevSelected) => [
-        ...prevSelected,
-        cryptoOrderId
-      ]);
-    } else {
-      setSelectedCryptoOrders((prevSelected) =>
-        prevSelected.filter((id) => id !== cryptoOrderId)
-      );
-    }
-  };
-
   const handlePageChange = (event: any, newPage: number): void => {
     setPage(newPage);
   };
@@ -168,86 +111,42 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     page,
     limit
   );
-  const selectedSomeCryptoOrders =
-    selectedCryptoOrders.length > 0 &&
-    selectedCryptoOrders.length < cryptoOrders.length;
-  const selectedAllCryptoOrders =
-    selectedCryptoOrders.length === cryptoOrders.length;
+
   const theme = useTheme();
 
   return (
     <Card>
-      {selectedBulkActions && (
-        <Box flex={1} p={2}>
-          <BulkActions />
-        </Box>
-      )}
-      {!selectedBulkActions && (
         <CardHeader
-          action={
-            <Box width={150}>
-              <FormControl fullWidth variant="outlined">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={filters.status || 'all'}
-                  onChange={handleStatusChange}
-                  label="Status"
-                  autoWidth
-                >
-                  {statusOptions.map((statusOption) => (
-                    <MenuItem key={statusOption.id} value={statusOption.id}>
-                      {statusOption.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          }
-          title="Recent Orders"
-        />
-      )}
+        action={
+          <Box width={250}>
+            <FormControl fullWidth variant="outlined">
+              <TextField id="outlined-basic" label="Search" name="search" variant="outlined" />
+            </FormControl>
+          </Box>
+        }
+        title="All Buyers"
+      />
       <Divider />
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  checked={selectedAllCryptoOrders}
-                  indeterminate={selectedSomeCryptoOrders}
-                  onChange={handleSelectAllCryptoOrders}
-                />
-              </TableCell>
+              <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Cell</TableCell>
-              <TableCell align="right">Job success</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Map view</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Place</TableCell>
+              <TableCell>Postal Code</TableCell>
+              <TableCell align="right">Listing</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((cryptoOrder) => {
-              const isCryptoOrderSelected = selectedCryptoOrders.includes(
-                cryptoOrder.id
-              );
+            {paginatedCryptoOrders && paginatedCryptoOrders.map((cryptoOrder, index) => {
               return (
                 <TableRow
                   hover
-                  key={cryptoOrder.id}
-                  selected={isCryptoOrderSelected}
+                  key={index}
                 >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      checked={isCryptoOrderSelected}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneCryptoOrder(event, cryptoOrder.id)
-                      }
-                      value={isCryptoOrderSelected}
-                    />
-                  </TableCell>
                   <TableCell>
                     <Typography
                       variant="body1"
@@ -256,10 +155,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderDetails}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {format(cryptoOrder.orderDate, 'MMMM dd yyyy')}
+                      {index+1}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -270,7 +166,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderID}
+                      {cryptoOrder.name}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -281,13 +177,10 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.sourceName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {cryptoOrder.sourceDesc}
+                      {cryptoOrder.country}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell>
                     <Typography
                       variant="body1"
                       fontWeight="bold"
@@ -295,20 +188,64 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.amountCrypto}
-                      {cryptoOrder.cryptoCurrency}
+                      {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(cryptoOrder.amount).format(
-                        `${cryptoOrder.currency}0,0.00`
-                      )}
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.code}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    {getStatusLabel(cryptoOrder.status)}
+                    <Tooltip title="Are you listing Agent?" arrow>
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            background: theme.colors.warning.lighter
+                          },
+                          color: theme.palette.warning.main
+                        }}
+                        color="inherit"
+                        size="small"
+                      >
+                        <SignalWifiStatusbar4BarIcon fontSize='small' />
+                        {/* {cryptoOrder.status == true ? (<SignalWifiStatusbar4BarIcon fontSize="small" />) : (<SignalWifiStatusbarConnectedNoInternet4Icon fontSize='small' />)} */}
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="Edit Order" arrow>
+                    <Tooltip title="View map" arrow>
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            background: theme.colors.info.lighter
+                          },
+                          color: theme.palette.info.main
+                        }}
+                        color="inherit"
+                        size="small"
+                      >
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Contact" arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
@@ -319,7 +256,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         color="inherit"
                         size="small"
                       >
-                        <VisibilityIcon fontSize="small" />
+                        <ConnectWithoutContactIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   </TableCell>
