@@ -31,12 +31,27 @@ function ManagementUserSettings() {
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
-  const tabs = [
+  const agentTabs = [
     { value: 'activity', label: 'Activity' },
     { value: 'edit_profile', label: 'Edit Profile' },
     { value: 'farming_area', label: 'Farming Area' },
     { value: 'active_showing', label: 'Active Showing' },
-    // { value: 'notifications', label: 'Notifications' },
+    { value: 'security', label: 'Passwords/Security' },
+    { value: 'billing', label: 'Billing' }
+  ];
+
+  const sellerTabs = [
+    { value: 'activity', label: 'Activity' },
+    { value: 'edit_profile', label: 'Edit Profile' },
+    { value: 'seller_area', label: 'Seller Area' },
+    { value: 'security', label: 'Passwords/Security' },
+    { value: 'billing', label: 'Billing' }
+  ];
+
+  const buyerTabs = [
+    { value: 'activity', label: 'Activity' },
+    { value: 'edit_profile', label: 'Edit Profile' },
+    { value: 'buyer_area', label: 'Buyer Area' },
     { value: 'security', label: 'Passwords/Security' },
     { value: 'billing', label: 'Billing' }
   ];
@@ -82,9 +97,18 @@ function ManagementUserSettings() {
               textColor="primary"
               indicatorColor="primary"
             >
-              {tabs.map((tab) => (
+              {currentUser.type == 'agent' ? agentTabs.map((tab) => (
                 <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
+              )) : null}
+
+              {currentUser.type == 'seller' ? sellerTabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              )) : null}
+
+              {currentUser.type == 'buyer' ? buyerTabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              )) : null}
+              
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>

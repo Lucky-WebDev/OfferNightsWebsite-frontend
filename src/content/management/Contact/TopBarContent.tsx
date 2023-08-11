@@ -4,18 +4,8 @@ import {
   IconButton,
   Tooltip,
   Avatar,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Drawer,
-  Divider,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   styled,
-  useTheme
 } from '@mui/material';
 import { formatDistance, subMinutes } from 'date-fns';
 import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
@@ -44,10 +34,10 @@ function TopBarContent() {
               height: 48
             }}
             alt="Server manager"
-            src="/static/images/avatars/1.jpg"
+            src="/static/images/avatars/server.jpg"
           />
           <Box ml={1}>
-            <Typography variant="h4">Zain Baptista</Typography>
+            <Typography variant="h4">Server Manager</Typography>
             <Typography variant="subtitle1">
               {formatDistance(subMinutes(new Date(), 8), new Date(), {
                 addSuffix: true

@@ -33,7 +33,7 @@ import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
 
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-import { Circle, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+import { Circle, MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
 import isEmpty from '../../../../validation/is-empty';
@@ -300,6 +300,11 @@ function ActiveShowingTab() {
               ) : (
                 <>
                   <MapClickHandler />
+                  <Marker position={position}>
+                    <Popup>
+                      {showingItem.address }
+                    </Popup>
+                  </Marker>
                   <Circle center={position} pathOptions={{ color: 'red' }} />
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 </>

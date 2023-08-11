@@ -4,7 +4,7 @@ import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import { Grid, Container, Card } from '@mui/material';
 import Footer from '../../../components/Footer';
 
-import { MapContainer, useMapEvents, TileLayer, Circle, Popup } from 'react-leaflet';
+import { MapContainer, useMapEvents, TileLayer, Circle, Popup, Marker } from 'react-leaflet';
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllAgents } from '../../../actions/mapAction';
@@ -87,15 +87,21 @@ function ApplicationsTransactions() {
           <Grid item xs={12}>
             <Card>
               <MapContainer bounds={mapBounds} style={{ height: '650px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                
                 {allAgents && allAgents.map((agent, index) => {
-                    <Circle center={[agent.lat, agent.lng]} pathOptions={{color: 'red'}}>
+                    // <Circle center={[agent.lat, agent.lng]} pathOptions={{color: 'red'}}>
+                    //   <Popup>
+                    //     {index}
+                    //   </Popup>
+                    // </Circle>
+                    <Marker position={{lat: agent.lat, lng: agent.lng}}>
                       <Popup>
-                        {index}
+                        {agent.address }
                       </Popup>
-                    </Circle>
+                    </Marker>
                 })}
                 
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
               </MapContainer><br />
               {/* <Map center={location} zoom={zoom}>

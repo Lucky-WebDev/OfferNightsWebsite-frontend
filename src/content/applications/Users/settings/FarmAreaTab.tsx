@@ -273,7 +273,7 @@ function FarmAreaTab() {
                     {mapInfo.address }
                   </Popup>
                 </Marker>
-                <Polygon positions={polygon} />
+                {/* <Polygon positions={polygon} /> */}
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
               </MapContainer><br />

@@ -8,8 +8,12 @@ import {
   InputBase,
   useTheme
 } from '@mui/material';
+import { useState } from 'react';
 import AttachFileTwoToneIcon from '@mui/icons-material/AttachFileTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
+import { useDispatch, useSelector } from 'react-redux';
+import { StateType } from '../../../reducer/dataType';
+import { sendMessage } from '../../../actions/contactAction';
 
 const MessageInputWrapper = styled(InputBase)(
   ({ theme }) => `
@@ -25,11 +29,28 @@ const Input = styled('input')({
 
 function BottomBarContent() {
   const theme = useTheme();
+  const dispatch: any = useDispatch();
 
-  const user = {
-    name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg'
-  };
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+
+  const [message, setMessage] = useState({
+    sender: currentUser._id,
+    receiver: 'server',
+    content: null
+  })
+
+  const onSendClick = e => {
+    e.preventDefault();
+
+    dispatch(sendMessage(message))
+  }
+
+  const onChange = e => {
+    setMessage({
+      ...message,
+      [e.target.name]: e.target.value
+    })
+  }
 
   return (
     <Box
@@ -43,17 +64,19 @@ function BottomBarContent() {
       <Box flexGrow={1} display="flex" alignItems="center">
         <Avatar
           sx={{ display: { xs: 'none', sm: 'flex' }, mr: 1 }}
-          alt={user.name}
-          src={user.avatar}
+          alt={currentUser.name}
+          src={currentUser.avatar}
         />
         <MessageInputWrapper
           autoFocus
+          name='content'
           placeholder="Write your message here..."
           fullWidth
+          onChange={onChange}
         />
       </Box>
       <Box>
-        <Tooltip arrow placement="top" title="Choose an emoji">
+        {/* <Tooltip arrow placement="top" title="Choose an emoji">
           <IconButton
             sx={{ fontSize: theme.typography.pxToRem(16) }}
             color="primary"
@@ -68,8 +91,8 @@ function BottomBarContent() {
               <AttachFileTwoToneIcon fontSize="small" />
             </IconButton>
           </label>
-        </Tooltip>
-        <Button startIcon={<SendTwoToneIcon />} variant="contained">
+        </Tooltip> */}
+        <Button startIcon={<SendTwoToneIcon />} variant="contained" onClick={onSendClick}>
           Send
         </Button>
       </Box>
