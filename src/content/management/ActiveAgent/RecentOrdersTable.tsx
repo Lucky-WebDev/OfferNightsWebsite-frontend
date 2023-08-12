@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -23,7 +23,8 @@ import {
   Typography,
   useTheme,
   CardHeader,
-  TextField
+  TextField,
+  Modal
 } from '@mui/material';
 
 import Label from '../../../components/Label';
@@ -34,6 +35,18 @@ import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact
 import SignalWifiStatusbarConnectedNoInternet4Icon from '@mui/icons-material/SignalWifiStatusbarConnectedNoInternet4';
 import BulkActions from './BulkActions';
 import { ContactMailOutlined } from '@mui/icons-material';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Link } from 'react-router-dom';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../config/marker/farming-marker.png'),
+  iconUrl: require('../../../config/marker/farming-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -43,6 +56,18 @@ interface RecentOrdersTableProps {
 interface Filters {
   status?: CryptoOrderStatus;
 }
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '70%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4
+};
 
 const applyFilters = (
   cryptoOrders: any,
@@ -112,6 +137,17 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     limit
   );
 
+  const mapBounds: any = [
+    [69.5335129, -153.8220681],
+    [43.31166455, -56.44995099337655]
+  ];
+
+  const [mapView, setMapView] = useState(false);
+  const onMapViewHandlerClick = () => setMapView(true)
+  const onMapViewHandlerClose = () => setMapView(false)
+
+  const mapRef = useRef();
+
   const theme = useTheme();
 
   return (
@@ -127,17 +163,17 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
         title="All Active Agents"
       />
       <Divider />
+      
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Country</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Place</TableCell>
-              <TableCell>Postal Code</TableCell>
-              <TableCell align="right">Listing</TableCell>
+              <TableCell align="right">Postal Code</TableCell>
+              <TableCell align="right">Radius</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -178,17 +214,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.country}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
                       {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
                     </Typography>
                   </TableCell>
@@ -200,10 +225,33 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                      <Modal
+                        open={mapView}
+                        onClose={onMapViewHandlerClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                          <MapContainer
+                            bounds={mapBounds}
+                            style={{ height: '600px', width: '100%' }}
+                            zoom={9}
+                            ref={mapRef}
+                          >
+                            <Marker position={[cryptoOrder.lat, cryptoOrder.lng]}>
+                              <Popup>{cryptoOrder.address}</Popup>
+                            </Marker>
+                            {/* <Polygon positions={polygon} /> */}
+                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                          </MapContainer>
+                        </Box>
+                      </Modal>
+                      <Link to={''} onClick={onMapViewHandlerClick}>
+                        {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                      </Link>
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="right">
                     <Typography
                       variant="body1"
                       fontWeight="bold"
@@ -215,30 +263,26 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="Are you listing Agent?" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.warning.lighter
-                          },
-                          color: theme.palette.warning.main
-                        }}
-                        color="inherit"
-                        size="small"
-                      >
-                        <SignalWifiStatusbar4BarIcon fontSize='small' />
-                        {/* {cryptoOrder.status == true ? (<SignalWifiStatusbar4BarIcon fontSize="small" />) : (<SignalWifiStatusbarConnectedNoInternet4Icon fontSize='small' />)} */}
-                      </IconButton>
-                    </Tooltip>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {cryptoOrder.radius} Km
+                    </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="View map" arrow>
+                    <Tooltip title={
+                      "Created Date : " + cryptoOrder.createdDate 
+                    } arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
-                            background: theme.colors.info.lighter
+                            background: theme.colors.primary.lighter
                           },
-                          color: theme.palette.info.main
+                          color: theme.palette.primary.main
                         }}
                         color="inherit"
                         size="small"
@@ -250,9 +294,9 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       <IconButton
                         sx={{
                           '&:hover': {
-                            background: theme.colors.primary.lighter
+                            background: theme.colors.error.lighter
                           },
-                          color: theme.palette.primary.main
+                          color: theme.palette.error.main
                         }}
                         color="inherit"
                         size="small"

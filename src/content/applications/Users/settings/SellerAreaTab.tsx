@@ -27,7 +27,8 @@ import {
   TextFieldProps,
   Select,
   MenuItem,
-  LinearProgress
+  LinearProgress,
+  Autocomplete
 } from '@mui/material';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
@@ -75,6 +76,12 @@ L.Icon.Default.mergeOptions({
     boxShadow: 24,
     p: 4
   };
+
+  interface AddressType {
+    lat: string;
+    lon: string;
+    label: '';
+  }
   
   function SellerAreaTab() {
     const [open, setOpen] = useState(false);
@@ -253,9 +260,60 @@ L.Icon.Default.mergeOptions({
       handleClose();
       dispatch(addSellerLocation(sellerRequest));
     };
+
+    const [inputValue, setInputValue] = useState('');
+    const [address, setAddress] = useState<AddressType>({
+      lat: '',
+      lon: '',
+      label: ''
+    });
+    const [options, setOptions] = useState([]);
   
-    console.log({ progress });
+    const placeToPosition = async (place) => {
+      try {
+        let url =
+          'https://nominatim.openstreetmap.org/search?format=jsonv2&q=' + place;
   
+        await fetch(url, {
+          method: 'GET',
+          mode: 'cors'
+          // headers: {
+          //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+          // }
+        })
+          .then((response) => response.json())
+          .then((data: any) => {
+            const options = data.map((item: any) => {
+              return { ...item, label: item.display_name };
+            });
+            setOptions(options);
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.log('Error', error);
+      }
+    };
+  
+    useEffect(() => {
+      placeToPosition(inputValue);
+    }, [inputValue]);
+  
+    useEffect(() => {
+      console.log({ address });
+      if (address) {
+        setPosition({
+          lat: address.lat,
+          lng: address.lon
+        });
+      }
+    }, [address]);
+  
+    const onSelectChange = (newValue) => {
+      setAddress(newValue);
+  
+      placeToPosition(inputValue);
+    };
+
     return (
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -297,14 +355,38 @@ L.Icon.Default.mergeOptions({
               </MapContainer>
               <br />
   
-              <Button
-                startIcon={<UploadTwoToneIcon />}
-                variant="contained"
-                disabled={addShow}
-                onClick={onAddLocation}
+              <Box
+                width={'100%'}
+                sx={{ display: 'flex', justifyContent: 'space-between' }}
               >
-                Select the position
-              </Button>
+                <Button
+                  startIcon={<UploadTwoToneIcon />}
+                  variant="contained"
+                  disabled={addShow}
+                  onClick={onAddLocation}
+                >
+                  Select the position
+                </Button>
+                <Typography id="modal-modal-title" variant="h6" component="h2" mt={2}>
+                    Please input place name and then click correct position. 
+                  </Typography>
+                <Autocomplete
+                  value={address}
+                  onChange={(event: any, newValue: string | null) => {
+                    onSelectChange(newValue);
+                  }}
+                  inputValue={inputValue}
+                  onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                  }}
+                  id="controllable-states-demo"
+                  options={options}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Address" />
+                  )}
+                />
+              </Box>
             </Box>
           </Modal>
   

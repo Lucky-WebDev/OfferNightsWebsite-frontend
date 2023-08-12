@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../reducer/dataType';
 import { enqueueSnackbar } from 'notistack';
 
-const API_BASE: string = 'http://localhost:5000/user';
-const API_VERIFY: string = 'http://localhost:5000/verify';
+const API_BASE: string = 'http://192.168.136.185:5000/user';
+const API_VERIFY: string = 'http://192.168.136.185:5000/verify';
 
 export const signUp = (data: any) => (dispatch) => {
   dispatch({

@@ -63,7 +63,6 @@ function ApplicationsTransactions() {
   const epcotCenter = [ 28.373711392892478, -81.54936790466309 ];
 
   const allBuyerInfo: any = useSelector((state: StateType) => state.auth.allBuyerInfo);
-  console.log(allBuyerInfo)
   
   return (
     <>
@@ -84,27 +83,16 @@ function ApplicationsTransactions() {
           <Grid item xs={12}>
             <Card>
               <MapContainer bounds={mapBounds} style={{ height: '650px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                
-                {allBuyerInfo && allBuyerInfo.map((agent, index) => {
-                    // <Circle center={[agent.lat, agent.lng]} pathOptions={{color: 'red'}}>
-                    //   <Popup>
-                    //     {index}
-                    //   </Popup>
-                    // </Circle>
-                    <Marker position={{lat: agent.lat, lng: agent.lng}}>
-                      <Popup>
-                        {agent.address }
-                      </Popup>
-                    </Marker>
-                })}
-                
+                {allBuyerInfo.map((buyer) => (
+                  <Marker key={buyer.id} position={[buyer.lat, buyer.lng]}>
+                    <Popup>
+                      {buyer.address}
+                    </Popup>
+                  </Marker>
+                ))}
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
               </MapContainer><br />
-              {/* <Map center={location} zoom={zoom}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors" />
-                <Circle color="magenta" center={epcotCenter} radius={400} />
-              </Map> */}
             </Card>
           </Grid>
           <Grid item xs={12}>

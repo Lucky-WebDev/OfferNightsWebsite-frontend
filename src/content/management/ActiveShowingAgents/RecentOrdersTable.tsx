@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -23,12 +23,26 @@ import {
   Typography,
   useTheme,
   CardHeader,
-  TextField
+  TextField,
+  Modal
 } from '@mui/material';
 
 import { CryptoOrder, CryptoOrderStatus } from '../../../models/crypto_order';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Link } from 'react-router-dom';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../config/marker/showing-marker.png'),
+  iconUrl: require('../../../config/marker/showing-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -38,6 +52,18 @@ interface RecentOrdersTableProps {
 interface Filters {
   status?: CryptoOrderStatus;
 }
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '70%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4
+};
 
 const applyFilters = (
   cryptoOrders: any,
@@ -87,6 +113,17 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
 
   const theme = useTheme();
 
+  const mapBounds: any = [
+    [69.5335129, -153.8220681],
+    [43.31166455, -56.44995099337655]
+  ];
+
+  const [mapView, setMapView] = useState(false);
+  const onMapViewHandlerClick = () => setMapView(true)
+  const onMapViewHandlerClose = () => setMapView(false)
+
+  const mapRef = useRef();
+
   return (
     <Card>
         <CardHeader
@@ -106,10 +143,9 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Country</TableCell>
+              <TableCell>Listing</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Place</TableCell>
-              <TableCell>Postal Code</TableCell>
               <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Price</TableCell>
               <TableCell align="right">Actions</TableCell>
@@ -152,7 +188,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.country}
+                      {cryptoOrder.listing}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -174,18 +210,31 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                       gutterBottom
                       noWrap
                     >
+                      <Modal
+                        open={mapView}
+                        onClose={onMapViewHandlerClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                          <MapContainer
+                            bounds={mapBounds}
+                            style={{ height: '600px', width: '100%' }}
+                            zoom={9}
+                            ref={mapRef}
+                          >
+
+                            <Marker position={[cryptoOrder.lat, cryptoOrder.lng]}>
+                              <Popup>{cryptoOrder.address}</Popup>
+                            </Marker>
+                            {/* <Polygon positions={polygon} /> */}
+                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                          </MapContainer>
+                        </Box>
+                      </Modal>
+                      <Link to={''} onClick={onMapViewHandlerClick}>
                       {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.code}
+                      </Link>
                     </Typography>
                   </TableCell>
                   <TableCell align='right'>
@@ -211,7 +260,10 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="View on map" arrow>
+                    <Tooltip title={
+                      "Postal Code : " + cryptoOrder.code + ",\n" + 
+                      "Offer Date : " + cryptoOrder.offerDate
+                    } arrow>
                       <IconButton
                         sx={{
                           '&:hover': {

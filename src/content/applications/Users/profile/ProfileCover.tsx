@@ -105,7 +105,7 @@ const ProfileCover = ({ user }) => {
         <CardMedia image={user.coverImg} />
       </CardCover>
       <AvatarWrapper>
-        <Avatar variant="rounded" alt={user.name} src={user.avatar} />
+        {/* <Avatar variant="rounded" alt={user.name} src={currentUser.avatar} /> */}
         {/* <ButtonUploadWrapper>
           <Input
             accept="image/*"
@@ -141,16 +141,14 @@ const ProfileCover = ({ user }) => {
               View Map
             </Button>
           </Box>
-          <Link to={'profile/settings'}>
-            <Button
+            {/* <Button
               sx={{ mt: { xs: 2, md: 0 } }}
               size="small"
               variant="text"
               endIcon={<ArrowForwardTwoToneIcon />}
             >
               See my profile
-            </Button>
-          </Link>
+            </Button> */}
         </Box>
       </Box>
     </>

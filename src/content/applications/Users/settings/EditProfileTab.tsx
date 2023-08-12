@@ -10,7 +10,10 @@ import {
   Select,
   MenuItem,
   Modal,
-  Stack
+  Stack,
+  FormControl,
+  InputLabel,
+  Input
 } from '@mui/material';
 
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
@@ -23,14 +26,18 @@ import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import DoNotDisturbOutlinedIcon from '@mui/icons-material/DoNotDisturbOutlined';
 import DownloadDoneOutlinedIcon from '@mui/icons-material/DownloadDoneOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 import Text from '../../../../components/Text';
 import Label from '../../../../components/Label';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType, UserType } from '../../../../reducer/dataType';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, forwardRef } from 'react';
 import {editProfile, generatePhoneToken, verifyPhone} from '../../../../actions/authAction'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import isEmpty from '../../../../validation/is-empty';
+import { IMaskInput } from 'react-imask';
+import 'react-phone-input-2/lib/style.css';
+import PhoneInput from 'react-phone-input-2';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -94,10 +101,6 @@ function EditProfileTab() {
     }
   }
 
-  const onPhoneNumberChange = e => {
-    setPhoneNumber(e.target.value)
-  }
-
   const onCancelClick = e => {
     e.preventDefault();
     // navigate('/profile/details')
@@ -143,6 +146,7 @@ function EditProfileTab() {
       enqueueSnackbar('Please fill in Cell Phone field.')
       return;
     }
+    console.log(phoneNumber)
     handlePhoneModalOpen()
     enqueueSnackbar('Please check out your phone SMS')
     const data = {
@@ -159,6 +163,10 @@ function EditProfileTab() {
     }
     handlePhoneModalClose()
     dispatch(verifyPhone(currentUser._id, verifyInfo))
+  }
+
+  const onChangePhoneNumber = (value) => {
+    setPhoneNumber(value)
   }
 
   return (
@@ -186,14 +194,19 @@ function EditProfileTab() {
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    *Cell Phone( +1 ):
+                    *Cell Phone:
                   </Box><br />
-                  <Button variant="text" onClick={onTokenGenerateClick} startIcon={<DownloadDoneOutlinedIcon />}>
+                  <Button variant="text" onClick={onTokenGenerateClick} startIcon={<CheckIcon />}>
                     Verify
                   </Button><br />
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
-                  <TextField type='number' name="phoneNumber" value={phoneNumber} onChange={onPhoneNumberChange} variant="outlined" />
+                  {/* <TextField type='number' name="phoneNumber" value={phoneNumber} onChange={onPhoneNumberChange} variant="outlined" /> */}
+                  <PhoneInput
+                    country={'ca'}
+                    value={phoneNumber}
+                    onChange={onChangePhoneNumber}
+                  />
                 </Grid>
               </Grid>
             </Typography>
@@ -281,7 +294,7 @@ function EditProfileTab() {
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    *FirstName:
+                    *First Name:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
@@ -289,7 +302,7 @@ function EditProfileTab() {
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    MiddleName:
+                    Middle Name:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
@@ -297,7 +310,7 @@ function EditProfileTab() {
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    *LastName:
+                    *Last Name:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
@@ -305,7 +318,7 @@ function EditProfileTab() {
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    TradeName:
+                    Trade Name:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
@@ -341,7 +354,7 @@ function EditProfileTab() {
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    Brokerage Name:
+                    Name:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>

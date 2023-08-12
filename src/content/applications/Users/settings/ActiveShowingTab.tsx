@@ -27,14 +27,22 @@ import {
   TextFieldProps,
   Select,
   MenuItem,
-  LinearProgress
+  LinearProgress,
+  Autocomplete
 } from '@mui/material';
-import L from 'leaflet'
+import L from 'leaflet';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
 
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-import { Circle, MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
+import {
+  Circle,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMapEvents
+} from 'react-leaflet';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
 import isEmpty from '../../../../validation/is-empty';
@@ -52,8 +60,8 @@ delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('../../../../config/marker/showing-marker.png'),
   iconUrl: require('../../../../config/marker/showing-marker.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-})
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -79,6 +87,12 @@ const mapStyle = {
   p: 4
 };
 
+interface AddressType {
+  lat: string;
+  lon: string;
+  label: '';
+}
+
 function ActiveShowingTab() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -102,7 +116,7 @@ function ActiveShowingTab() {
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
-  dispatch(getMyActiveShowing(currentUser._id))
+  dispatch(getMyActiveShowing(currentUser._id));
 
   const mapBounds: any = [
     [69.5335129, -153.8220681],
@@ -221,6 +235,7 @@ function ActiveShowingTab() {
     e.preventDefault();
 
     handleCloseConfirm();
+    handleMapClose();
 
     if (isEmpty(showingItem.listing)) {
       enqueueSnackbar('Please input listing.');
@@ -280,7 +295,56 @@ function ActiveShowingTab() {
     dispatch(addActiveShowing(activeShowing));
   };
 
-  console.log({ progress });
+  const [inputValue, setInputValue] = useState('');
+  const [address, setAddress] = useState<AddressType>({
+    lat: '',
+    lon: '',
+    label: ''
+  });
+  const [options, setOptions] = useState([]);
+
+  const placeToPosition = async (place) => {
+    try {
+      let url =
+        'https://nominatim.openstreetmap.org/search?format=json&q=' + place;
+
+      await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+        // headers: {
+        //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+        // }
+      })
+        .then((response) => response.json())
+        .then((data: any) => {
+          const options = data.map((item: any) => {
+            return { ...item, label: item.display_name };
+          });
+          setOptions(options);
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  useEffect(() => {
+    placeToPosition(inputValue);
+  }, [inputValue]);
+
+  useEffect(() => {
+    console.log({ address });
+    setPosition({
+      lat: address.lat,
+      lng: address.lon
+    });
+  }, [address]);
+
+  const onSelectChange = (newValue) => {
+    setAddress(newValue);
+
+    placeToPosition(inputValue);
+  };
 
   return (
     <Grid container spacing={3}>
@@ -312,9 +376,7 @@ function ActiveShowingTab() {
                 <>
                   <MapClickHandler />
                   <Marker position={position}>
-                    <Popup>
-                      {showingItem.address }
-                    </Popup>
+                    <Popup>{showingItem.address}</Popup>
                   </Marker>
                   <Circle center={position} pathOptions={{ color: 'red' }} />
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -322,15 +384,38 @@ function ActiveShowingTab() {
               )}
             </MapContainer>
             <br />
-
-            <Button
-              startIcon={<UploadTwoToneIcon />}
-              variant="contained"
-              disabled={addShow}
-              onClick={onAddLocation}
-            >
-              Select the position
-            </Button>
+            <Box
+                width={'100%'}
+                sx={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                <Button
+                  startIcon={<UploadTwoToneIcon />}
+                  variant="contained"
+                  disabled={addShow}
+                  onClick={handleClickOpenConfirm}
+                >
+                  Add Location
+                </Button>
+                <Typography id="modal-modal-title" variant="h6" component="h2" mt={2}>
+                  Please input place name and then click correct position. 
+                </Typography>
+                <Autocomplete
+                  value={address}
+                  onChange={(event: any, newValue: string | null) => {
+                    onSelectChange(newValue);
+                  }}
+                  inputValue={inputValue}
+                  onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                  }}
+                  id="controllable-states-demo"
+                  options={options}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Address" />
+                  )}
+                />
+              </Box>
           </Box>
         </Modal>
 

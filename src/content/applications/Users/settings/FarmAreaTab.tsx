@@ -12,30 +12,50 @@ import {
   DialogContentText,
   DialogActions,
   Dialog,
-  DialogTitle
+  DialogTitle,
+  TextField,
+  Autocomplete
 } from '@mui/material';
 
-import L from 'leaflet'
-import { MapContainer, TileLayer, Marker, useMap, Polygon, Popup, Circle, useMapEvents, Tooltip, CircleMarker } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  Polygon,
+  Popup,
+  Circle,
+  useMapEvents,
+  Tooltip,
+  CircleMarker
+} from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
 import { styled } from '@mui/material/styles';
 
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType, UserType } from '../../../../reducer/dataType';
-import { useState, useRef, lazy, Suspense, useMemo } from 'react';
+import { useState, useRef, lazy, Suspense, useMemo, useEffect } from 'react';
 import SuspenseLoader from '../../../../components/SuspenseLoader';
 
 import { addLocation, getActiveArea } from '../../../../actions/mapAction';
+import { enqueueSnackbar } from 'notistack';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('../../../../config/marker/farming-marker.png'),
   iconUrl: require('../../../../config/marker/farming-marker.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-})
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
+
+interface AddressType {
+  lat: string;
+  lon: string;
+  label: '';
+}
 
 const Loader = (Component) => (props) =>
   (
@@ -45,7 +65,9 @@ const Loader = (Component) => (props) =>
   );
 
 const TableForm = Loader(
-  lazy(() => import('../../../../content/applications/Users/settings/TableForm'))
+  lazy(
+    () => import('../../../../content/applications/Users/settings/TableForm')
+  )
 );
 
 const style = {
@@ -57,7 +79,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 const CardCover = styled(Card)(
@@ -83,13 +105,13 @@ function FarmAreaTab() {
   const [position, setPosition] = useState({
     lat: '',
     lng: ''
-  })
+  });
 
   const [open, setOpen] = useState(false);
   const [addShow, setAddShow] = useState(true);
   const handleOpen = () => {
-    setOpen(true)
-    setAddShow(true)
+    setOpen(true);
+    setAddShow(true);
   };
   const handleClose = () => setOpen(false);
 
@@ -103,9 +125,13 @@ function FarmAreaTab() {
     setOpenConfirm(false);
   };
 
-  const currentUser: any = useSelector((state: StateType) => state.auth.user)
+  useEffect(() => {
+    dispatch(getActiveArea(currentUser._id));
+  }, [])
 
-  dispatch(getActiveArea(currentUser._id))
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+  const myActiveArea: any = useSelector((state: StateType) => state.auth.activeArea);
+
 
   const [mapInfo, setMapInfo] = useState({
     country: null,
@@ -121,38 +147,49 @@ function FarmAreaTab() {
     lng: null,
     address: null,
     code: null
-  })
+  });
 
-  const [center, setCenter] = useState({ lat: 53.00875725, lng: -102.34691034378578 })
-  const ZOOM_LEVEL = 9
-  const mapRef = useRef()
+  const [center, setCenter] = useState({
+    lat: 53.00875725,
+    lng: -102.34691034378578
+  });
+  const ZOOM_LEVEL = 9;
+  const mapRef = useRef();
 
   const MapClickHandler = () => {
     let map = useMapEvents({
       click: async (e) => {
         const { lat, lng } = e.latlng;
-        const api_key: string = 'AIzaSyBaBJNvo7jQhIkQKRFalCVeWDMVO-CXOD0';
         try {
           // const response = await axios.get(
           //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
           // );
+          if(myActiveArea.length >= 4) {
+            handleClose();
+            enqueueSnackbar('You can not any farming area anymore.')
+            return;
+          }
 
-          let url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2" + "&lat=" + lat + "&lon=" + lng;
-              
+          let url =
+            'https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+            '&lat=' +
+            lat +
+            '&lon=' +
+            lng;
+
           await fetch(url, {
-            method: "GET",
-            mode: "cors",
+            method: 'GET',
+            mode: 'cors'
             // headers: {
             //   "Access-Control-Allow-Origin": "https://nominatim.openstreetmap.org"
             // }
           })
             .then((response) => response.json())
             .then((data) => {
-              console.log(data)
+              console.log(data);
               const display_name = data.display_name;
               const place_id = data.address.postcode;
 
-              console.log(display_name)
               setMapInfo({
                 ...mapInfo,
                 country: data.address.country,
@@ -168,34 +205,31 @@ function FarmAreaTab() {
                 lng: lng,
                 address: display_name,
                 code: place_id
-              })
+              });
             })
-            .catch(err => console.log(err))
+            .catch((err) => console.log(err));
           
-          setAddShow(false)
+          setAddShow(false);
 
           setPosition({
             lat: lat,
             lng: lng
-          })
-
+          });
         } catch (error) {
           console.log('Error', error);
         }
-      },
+      }
     });
-  
+
     return null;
-  }
+  };
 
-  const onAddLocation = e => {
-    e.preventDefault()
-
-    console.log(mapInfo)
+  const onAddLocation = (e) => {
+    e.preventDefault();
 
     const location: any = {
       type: currentUser.type,
-      name: currentUser.firstName + " " + currentUser.lastName,
+      name: currentUser.firstName + ' ' + currentUser.lastName,
       email: currentUser.email,
       cell: currentUser.cell,
       country: mapInfo.country,
@@ -210,20 +244,23 @@ function FarmAreaTab() {
       address: mapInfo.address,
       code: mapInfo.code,
       lat: mapInfo.lat,
-      lng: mapInfo.lng,
-    }
+      lng: mapInfo.lng
+    };
 
-    dispatch(addLocation(currentUser._id, location))
-    handleClose()
-    handleCloseConfirm()
-  }
+    dispatch(addLocation(currentUser._id, location));
+    handleClose();
+    handleCloseConfirm();
+  };
 
   const user = {
     coverImg: '/static/images/background/map.png',
-    avatar: '/static/images/avatars/main.jpg',
+    avatar: '/static/images/avatars/main.jpg'
   };
 
-  const mapBounds: any = [[69.5335129, -153.8220681], [43.31166455, -56.44995099337655]];
+  const mapBounds: any = [
+    [69.5335129, -153.8220681],
+    [43.31166455, -56.44995099337655]
+  ];
 
   const polygon = [
     [
@@ -231,9 +268,62 @@ function FarmAreaTab() {
       [28.35, -71.55],
       [38.36, -71.55],
       [38.36, -81.56],
-      [28.35, -81.56],
+      [28.35, -81.56]
     ]
-  ]
+  ];
+
+  const [inputValue, setInputValue] = useState('');
+  const [address, setAddress] = useState<AddressType>({
+    lat: '',
+    lon: '',
+    label: ''
+  });
+  const [options, setOptions] = useState([]);
+
+  const placeToPosition = async (place) => {
+    try {
+      let url =
+        'https://nominatim.openstreetmap.org/search?format=jsonv2&q=' + place;
+
+      await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+        // headers: {
+        //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+        // }
+      })
+        .then((response) => response.json())
+        .then((data: any) => {
+          const options = data.map((item: any) => {
+            return { ...item, label: item.display_name };
+          });
+          setOptions(options);
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  useEffect(() => {
+    placeToPosition(inputValue);
+  }, [inputValue]);
+
+  useEffect(() => {
+    console.log({ address });
+    if (address) {
+      setPosition({
+        lat: address.lat,
+        lng: address.lon
+      });
+    }
+  }, [address]);
+
+  const onSelectChange = (newValue) => {
+    setAddress(newValue);
+
+    placeToPosition(inputValue);
+  };
 
   return (
     <Grid container spacing={3}>
@@ -247,10 +337,10 @@ function FarmAreaTab() {
           >
             <Box>
               <Typography variant="h4" gutterBottom>
-                Active Area Information
+                Farming Area
               </Typography>
               <Typography variant="subtitle2">
-                Manage details related to your associated active area information
+                Add up to 4 areas
               </Typography>
             </Box>
           </Box>
@@ -266,28 +356,57 @@ function FarmAreaTab() {
                 OpenStreetMap
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                You can select your active area. And then you can click Add button.
+                You can select your active area. And then you can click Add
+                button.
               </Typography>
 
-              <MapContainer bounds={mapBounds} style={{ height: '600px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
+              <MapContainer
+                bounds={mapBounds}
+                style={{ height: '600px', width: '100%' }}
+                zoom={ZOOM_LEVEL}
+                ref={mapRef}
+              >
                 <Marker position={position}>
-                  <Popup>
-                    {mapInfo.address }
-                  </Popup>
+                  <Popup>{mapInfo.address}</Popup>
                 </Marker>
                 {/* <Polygon positions={polygon} /> */}
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
-              </MapContainer><br />
-              
-              <Button
-                startIcon={<UploadTwoToneIcon />}
-                variant="contained"
-                disabled={addShow}
-                onClick={handleClickOpenConfirm}
+              </MapContainer>
+              <br />
+
+              <Box
+                width={'100%'}
+                sx={{ display: 'flex', justifyContent: 'space-between' }}
               >
-                Add Location
-              </Button>
+                <Button
+                  startIcon={<UploadTwoToneIcon />}
+                  disabled={addShow}
+                  variant="contained"
+                  onClick={handleClickOpenConfirm}
+                >
+                  Add Location
+                </Button>
+                <Typography id="modal-modal-title" variant="h6" component="h2" mt={2}>
+                  Please input place name and then click correct position. 
+                </Typography>
+                <Autocomplete
+                  value={address}
+                  onChange={(event: any, newValue: string | null) => {
+                    onSelectChange(newValue);
+                  }}
+                  inputValue={inputValue}
+                  onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                  }}
+                  id="controllable-states-demo"
+                  options={options}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Address" />
+                  )}
+                />
+              </Box>
             </Box>
           </Modal>
           <Dialog
@@ -296,9 +415,7 @@ function FarmAreaTab() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
-              Active Area
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">Active Area</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Do you really add new Active area?
@@ -315,21 +432,21 @@ function FarmAreaTab() {
             <Typography variant="subtitle2">
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={8} md={9}>
-                <CardCover>
-                  <CardMedia image={user.coverImg} />
-                  <CardCoverAction>
-                    <label htmlFor="change-cover">
-                      <Button
-                        startIcon={<UploadTwoToneIcon />}
-                        variant="contained"
-                        component="span"
-                        onClick={handleOpen}
-                      >
-                        OpenStreetMap
-                      </Button>
-                    </label>
-                  </CardCoverAction>
-                </CardCover>  
+                  <CardCover>
+                    <CardMedia image={user.coverImg} />
+                    <CardCoverAction>
+                      <label htmlFor="change-cover">
+                        <Button
+                          startIcon={<UploadTwoToneIcon />}
+                          variant="contained"
+                          component="span"
+                          onClick={handleOpen}
+                        >
+                          OpenStreetMap
+                        </Button>
+                      </label>
+                    </CardCoverAction>
+                  </CardCover>
                 </Grid>
               </Grid>
             </Typography>

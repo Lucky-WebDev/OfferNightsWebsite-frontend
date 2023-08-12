@@ -29,12 +29,12 @@ const TabsWrapper = styled(Tabs)(
 );
 
 function ManagementUserSettings() {
-  const [currentTab, setCurrentTab] = useState<string>('activity');
+  const [currentTab, setCurrentTab] = useState<string>('edit_profile');
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
   const agentTabs = [
-    { value: 'activity', label: 'Activity' },
+    // { value: 'activity', label: 'Activity' },
     { value: 'edit_profile', label: 'Edit Profile' },
     { value: 'farming_area', label: 'Farming Area' },
     { value: 'active_showing', label: 'Active Showing' },
@@ -43,7 +43,7 @@ function ManagementUserSettings() {
   ];
 
   const sellerTabs = [
-    { value: 'activity', label: 'Activity' },
+    // { value: 'activity', label: 'Activity' },
     { value: 'edit_profile', label: 'Edit Profile' },
     { value: 'seller_area', label: 'Seller Area' },
     { value: 'security', label: 'Passwords/Security' },
@@ -51,7 +51,7 @@ function ManagementUserSettings() {
   ];
 
   const buyerTabs = [
-    { value: 'activity', label: 'Activity' },
+    // { value: 'activity', label: 'Activity' },
     { value: 'edit_profile', label: 'Edit Profile' },
     { value: 'buyer_area', label: 'Buyer Area' },
     { value: 'security', label: 'Passwords/Security' },
@@ -109,7 +109,7 @@ function ManagementUserSettings() {
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>
-            {currentTab === 'activity' && <ActivityTab />}
+            {/* {currentTab === 'activity' && <ActivityTab />} */}
             {currentTab === 'edit_profile' && <EditProfileTab />}
             {currentTab === 'farming_area' && <FarmAreaTab />}
             {currentTab === 'active_showing' && <ActiveShowingTab />}

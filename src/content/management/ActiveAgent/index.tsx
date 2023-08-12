@@ -4,7 +4,14 @@ import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import { Grid, Container, Card } from '@mui/material';
 import Footer from '../../../components/Footer';
 
-import { MapContainer, useMapEvents, TileLayer, Circle, Popup, Marker } from 'react-leaflet';
+import {
+  MapContainer,
+  useMapEvents,
+  TileLayer,
+  Circle,
+  Popup,
+  Marker
+} from 'react-leaflet';
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllAgents } from '../../../actions/mapAction';
@@ -13,33 +20,38 @@ import { StateType } from '../../../reducer/dataType';
 
 function ApplicationsTransactions() {
   const dispatch: any = useDispatch();
-  
+
   // const [center, setCenter] = useState({ lat: 53.00875725, lng: -102.34691034378578 })
-  const ZOOM_LEVEL = 9
-  const mapRef = useRef()
+  const ZOOM_LEVEL = 9;
+  const mapRef = useRef();
 
   const [position, setPosition] = useState({
     lat: null,
     lng: null
-  })
+  });
 
   useEffect(() => {
-    dispatch(getAllAgents())
-  }, [])
+    dispatch(getAllAgents());
+  }, []);
 
   const MapClickHandler = () => {
     let map = useMapEvents({
       click: async (e) => {
         const { lat, lng } = e.latlng;
-  
+
         try {
-          let url = "https://nominatim.openstreetmap.org/reverse?format=json" +"&lat=" + lat + "&lon=" + lng;
-              
+          let url =
+            'https://nominatim.openstreetmap.org/reverse?format=json' +
+            '&lat=' +
+            lat +
+            '&lon=' +
+            lng;
+
           await fetch(url, {
-            method: "GET",
-            mode: "cors",
+            method: 'GET',
+            mode: 'cors',
             headers: {
-              "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+              'Access-Control-Allow-Origin': 'https://o2cj2q.csb.app'
             }
           })
             .then((response) => response.json())
@@ -47,25 +59,29 @@ function ApplicationsTransactions() {
               setPosition({
                 lat,
                 lng
-              })
+              });
             });
         } catch (error) {
           console.log('Error', error);
         }
-      },
+      }
     });
     return null;
-  }
+  };
 
-  const mapBounds: any = [[69.5335129, -153.8220681], [43.31166455, -56.44995099337655]];
+  const mapBounds: any = [
+    [69.5335129, -153.8220681],
+    [43.31166455, -56.44995099337655]
+  ];
 
-  const location = [ 28.365724898272077, -81.55254364013672 ];
+  const location = [28.365724898272077, -81.55254364013672];
   const zoom = 14;
-  const epcotCenter = [ 28.373711392892478, -81.54936790466309 ];
+  const epcotCenter = [28.373711392892478, -81.54936790466309];
 
-  const allAgents: any = useSelector((state: StateType) => state.auth.activeArea);
-  console.log(allAgents)
-  
+  const allAgents: any = useSelector(
+    (state: StateType) => state.auth.activeArea
+  );
+
   return (
     <>
       <Helmet>
@@ -84,28 +100,23 @@ function ApplicationsTransactions() {
         >
           <Grid item xs={12}>
             <Card>
-              <MapContainer bounds={mapBounds} style={{ height: '650px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                
-                {allAgents && allAgents.map((agent, index) => {
-                    // <Circle center={[agent.lat, agent.lng]} pathOptions={{color: 'red'}}>
-                    //   <Popup>
-                    //     {index}
-                    //   </Popup>
-                    // </Circle>
-                    <Marker position={{lat: agent.lat, lng: agent.lng}}>
-                      <Popup>
-                        {agent.address }
-                      </Popup>
-                    </Marker>
-                })}
-                
+              <MapContainer
+                bounds={mapBounds}
+                style={{ height: '650px', width: '100%' }}
+                zoom={ZOOM_LEVEL}
+                ref={mapRef}
+              >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+                {allAgents &&
+                  allAgents.map((agent, index) => (
+                      <Marker key={agent.id} position={[agent.lat, agent.lng]}>
+                        <Popup>{agent.address}</Popup>
+                      </Marker>
+                    ))}
                 <MapClickHandler />
-              </MapContainer><br />
-              {/* <Map center={location} zoom={zoom}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors" />
-                <Circle color="magenta" center={epcotCenter} radius={400} />
-              </Map> */}
+              </MapContainer>
+              <br />
             </Card>
           </Grid>
           <Grid item xs={12}>

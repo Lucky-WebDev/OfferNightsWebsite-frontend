@@ -2,7 +2,7 @@ import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import { Types } from '../actions/types';
 
-const API_BASE: string = 'http://localhost:5000/buyer';
+const API_BASE: string = 'http://192.168.136.185:5000/buyer';
 
 export const addBuyerLocation = (data: any) => (dispatch) => {
   axios

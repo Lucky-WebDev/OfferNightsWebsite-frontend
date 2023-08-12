@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from '../api/setAuthToken';
 import { enqueueSnackbar } from 'notistack';
 
-const API_BASE: string = 'http://localhost:5000/map';
+const API_BASE: string = 'http://192.168.136.185:5000/map';
 
 export const addLocation = (id: string, data: any) => (dispatch) => {
   axios

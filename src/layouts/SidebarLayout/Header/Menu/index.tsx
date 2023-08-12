@@ -172,7 +172,7 @@ function HeaderMenu() {
             classes={{ root: 'MuiListItem-indicators' }}
             button
             component={NavLink}
-            to={isAuthenticated == false ? "/user/sign-in" : "/components/contact-us"}
+            to={isAuthenticated == false ? "/user/sign-in" : "/management/contact"}
           >
             <ListItemText
               primaryTypographyProps={{ noWrap: true }}

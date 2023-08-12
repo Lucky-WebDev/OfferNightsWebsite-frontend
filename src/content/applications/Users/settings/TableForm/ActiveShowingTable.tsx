@@ -103,7 +103,6 @@ function ActiveShowingTable() {
           <TableHead>
             <TableRow>
               <TableCell>No</TableCell>
-              <TableCell>Name</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Place</TableCell>
               <TableCell>Postal Code</TableCell>
@@ -130,17 +129,6 @@ function ActiveShowingTable() {
                       noWrap
                     >
                       {limit*page+index+1}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.name}
                     </Typography>
                   </TableCell>
                   <TableCell>
