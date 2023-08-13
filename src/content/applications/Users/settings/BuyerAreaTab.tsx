@@ -34,7 +34,7 @@ import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
 
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-import { Circle, MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
+import { Circle, MapContainer, Marker, Polygon, Popup, TileLayer, useMapEvents } from 'react-leaflet';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
 import isEmpty from '../../../../validation/is-empty';
@@ -281,7 +281,8 @@ L.Icon.Default.mergeOptions({
         typeHouse: buyerInfo.typeHouse,
         interestCity: buyerInfo.interestCity,
         mortage: buyerInfo.mortage,
-        phone: buyerInfo.phone
+        phone: buyerInfo.phone,
+        radius: currentUser.radius
       };
   
       handleClose();
@@ -375,7 +376,13 @@ L.Icon.Default.mergeOptions({
                       </Popup>
                     </Marker>
                     <MapClickHandler />
-                    <Circle center={position} pathOptions={{ color: 'red' }} />
+                    <Polygon positions={[[
+                      [Number(position.lat)-Number(currentUser.radius)/200, Number(position.lng)+Number(currentUser.radius)/200],
+                      [Number(position.lat)-Number(currentUser.radius)/200, Number(position.lng)-Number(currentUser.radius)/200],
+                      [Number(position.lat)+Number(currentUser.radius)/200, Number(position.lng)-Number(currentUser.radius)/200],
+                      [Number(position.lat)+Number(currentUser.radius)/200, Number(position.lng)+Number(currentUser.radius)/200],
+                      [Number(position.lat)-Number(currentUser.radius)/200, Number(position.lng)+Number(currentUser.radius)/200],
+                    ]]} />
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   </>
                 )}
@@ -651,7 +658,7 @@ L.Icon.Default.mergeOptions({
                         variant="contained"
                         onClick={handleClickOpenConfirm}
                       >
-                        Add Active Showing
+                        Add Buyer Area
                       </Button>
                       <Dialog
                         open={openConfirm}

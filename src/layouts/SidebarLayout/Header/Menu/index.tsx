@@ -81,7 +81,7 @@ function HeaderMenu() {
 
   return (
     <div className="font-face-gm">
-    {currentUser.status != "admin" ? (
+    {/* {currentUser.status != "admin" ? (
       <ListWrapper
         sx={{
           display: {
@@ -204,7 +204,7 @@ function HeaderMenu() {
           </ListItem>
         </List>
       </ListWrapper>
-    )}
+    )} */}
       
       <Menu anchorEl={ref.current} onClose={handleClose} open={isOpen}>
         <MenuItem sx={{ px: 3 }} component={NavLink} to="/overview">

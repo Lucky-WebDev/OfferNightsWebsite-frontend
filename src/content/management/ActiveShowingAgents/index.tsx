@@ -8,6 +8,15 @@ import RecentOrders from './RecentOrders';
 import { useDispatch } from 'react-redux';
 import { getAllActiveShowing } from '../../../actions/showingAction';
 import { useEffect } from 'react';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../config/marker/showing-marker.png'),
+  iconUrl: require('../../../config/marker/showing-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 function ApplicationsTransactions() {
   const dispatch: any = useDispatch();

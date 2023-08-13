@@ -27,15 +27,14 @@ import {
   Modal
 } from '@mui/material';
 
-import Label from '../../../components/Label';
-import { CryptoOrder, CryptoOrderStatus } from '../../../models/crypto_order';
+import { CryptoOrderStatus } from '../../../models/crypto_order';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SignalWifiStatusbar4BarIcon from '@mui/icons-material/SignalWifiStatusbar4Bar';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import SignalWifiStatusbarConnectedNoInternet4Icon from '@mui/icons-material/SignalWifiStatusbarConnectedNoInternet4';
 import BulkActions from './BulkActions';
 import { ContactMailOutlined } from '@mui/icons-material';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -103,25 +102,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     status: null
   });
 
-  const statusOptions = [
-    {
-      id: 'all',
-      name: 'All'
-    },
-    {
-      id: 'completed',
-      name: 'Completed'
-    },
-    {
-      id: 'pending',
-      name: 'Pending'
-    },
-    {
-      id: 'failed',
-      name: 'Failed'
-    }
-  ];
-
   const handlePageChange = (event: any, newPage: number): void => {
     setPage(newPage);
   };
@@ -150,6 +130,36 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
 
   const theme = useTheme();
 
+  const [currentPosition, setCurrentPosition] = useState({
+    lat: '',
+    lng: '',
+    radius: ''
+  });
+
+  const [mapViewBounds, setMapViewBounds] = useState({
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: 0
+  });
+
+  const onMapView = index => {
+    setCurrentPosition({
+      lat: cryptoOrders[index].lat,
+      lng: cryptoOrders[index].lng,
+      radius: cryptoOrders[index].radius
+    })
+
+    setMapViewBounds({
+      x1: Number(cryptoOrders[index].lat)-0.05,
+      y1: Number(cryptoOrders[index].lng)-0.05,
+      x2: Number(cryptoOrders[index].lat)+0.05,
+      y2: Number(cryptoOrders[index].lng)+0.05,
+    })
+
+    onMapViewHandlerClick()
+  }
+
   return (
     <Card>
         <CardHeader
@@ -163,6 +173,32 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
         title="All Active Agents"
       />
       <Divider />
+      <Modal
+        open={mapView}
+        onClose={onMapViewHandlerClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <MapContainer
+            bounds={[[mapViewBounds.x1, mapViewBounds.y1], [mapViewBounds.x2, mapViewBounds.y2]]}
+            style={{ height: '600px', width: '100%' }}
+            zoom={9}
+            ref={mapRef}
+          >
+            <Marker position={[currentPosition.lat, currentPosition.lng]}>
+            </Marker>
+            <Polygon positions={[[
+              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
+              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)-Number(currentPosition.radius)/200],
+              [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)-Number(currentPosition.radius)/200],
+              [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
+              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
+            ]]} />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </MapContainer>
+        </Box>
+      </Modal>
       
       <TableContainer>
         <Table>
@@ -224,29 +260,8 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       color="text.primary"
                       gutterBottom
                       noWrap
-                    >
-                      <Modal
-                        open={mapView}
-                        onClose={onMapViewHandlerClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
                       >
-                        <Box sx={style}>
-                          <MapContainer
-                            bounds={mapBounds}
-                            style={{ height: '600px', width: '100%' }}
-                            zoom={9}
-                            ref={mapRef}
-                          >
-                            <Marker position={[cryptoOrder.lat, cryptoOrder.lng]}>
-                              <Popup>{cryptoOrder.address}</Popup>
-                            </Marker>
-                            {/* <Polygon positions={polygon} /> */}
-                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                          </MapContainer>
-                        </Box>
-                      </Modal>
-                      <Link to={''} onClick={onMapViewHandlerClick}>
+                      <Link to={''} onClick={() => onMapView(index)}>
                         {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
                       </Link>
                     </Typography>

@@ -33,7 +33,7 @@ function HeaderMenu() {
 
   return (
     <>
-      
+      <div className="container font-face-gm">
       <ListWrapper>
         <List disablePadding component={Box} display="flex">
           <Logo />
@@ -142,6 +142,7 @@ function HeaderMenu() {
           Modals
         </MenuItem>
       </Menu>
+      </div>
     </>
   );
 }

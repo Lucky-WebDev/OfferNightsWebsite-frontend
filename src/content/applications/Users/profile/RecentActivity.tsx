@@ -12,6 +12,8 @@ import {
 import ShoppingBagTwoToneIcon from '@mui/icons-material/ShoppingBagTwoTone';
 import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
+import { useSelector } from 'react-redux';
+import { StateType } from '../../../../reducer/dataType';
 
 const AvatarPrimary = styled(Avatar)(
   ({ theme }) => `
@@ -25,6 +27,10 @@ const AvatarPrimary = styled(Avatar)(
 function RecentActivity() {
   const theme = useTheme();
 
+  const allAgents: any = useSelector((state: StateType) => state.auth.allAgents) || [];
+  const allSellerInfo: any = useSelector((state: StateType) => state.auth.allSellerInfo) || [];
+  const allBuyerInfo: any = useSelector((state: StateType) => state.auth.allBuyerInfo) || [];
+
   return (
     <Card>
       <CardHeader title="Subscribers" />
@@ -34,7 +40,7 @@ function RecentActivity() {
           <ShoppingBagTwoToneIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Agents</Typography>
+          <Typography variant="h3">All Active Agents</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={8}>
@@ -45,7 +51,7 @@ function RecentActivity() {
               >
                 Total
               </Typography>
-              <Typography variant="h2">485</Typography>
+              <Typography variant="h2">{allAgents.length}</Typography>
             </Box>
             <Box>
               <Typography
@@ -55,7 +61,7 @@ function RecentActivity() {
               >
                 Usable
               </Typography>
-              <Typography variant="h2">8</Typography>
+              <Typography variant="h2">{allAgents.length}</Typography>
             </Box>
           </Box>
         </Box>
@@ -66,7 +72,7 @@ function RecentActivity() {
           <FavoriteTwoToneIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Seller</Typography>
+          <Typography variant="h3">All Seller</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={8}>
@@ -77,7 +83,7 @@ function RecentActivity() {
               >
                 Total
               </Typography>
-              <Typography variant="h2">64</Typography>
+              <Typography variant="h2">{allSellerInfo.length}</Typography>
             </Box>
             <Box>
               <Typography
@@ -87,7 +93,7 @@ function RecentActivity() {
               >
                 Usable
               </Typography>
-              <Typography variant="h2">15</Typography>
+              <Typography variant="h2">{allSellerInfo.length}</Typography>
             </Box>
           </Box>
         </Box>
@@ -98,7 +104,7 @@ function RecentActivity() {
           <StarTwoToneIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Buyer</Typography>
+          <Typography variant="h3">All Buyer</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={8}>
@@ -109,7 +115,7 @@ function RecentActivity() {
               >
                 Total
               </Typography>
-              <Typography variant="h2">654</Typography>
+              <Typography variant="h2">{allBuyerInfo.length}</Typography>
             </Box>
             <Box>
               <Typography
@@ -119,7 +125,7 @@ function RecentActivity() {
               >
                 Usable
               </Typography>
-              <Typography variant="h2">21</Typography>
+              <Typography variant="h2">{allBuyerInfo.length}</Typography>
             </Box>
           </Box>
         </Box>

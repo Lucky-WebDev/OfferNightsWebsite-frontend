@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -28,7 +28,8 @@ import {
   Button,
   DialogActions,
   DialogContentText,
-  Dialog
+  Dialog,
+  Modal
 } from '@mui/material';
 
 import { CryptoOrder, CryptoOrderStatus } from '../../../../../models/crypto_order';
@@ -38,6 +39,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StateType } from '../../../../../reducer/dataType';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import { deleteActiveShowing } from '../../../../../actions/showingAction';
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 
 interface Filters {
   status?: CryptoOrderStatus;
@@ -49,6 +51,18 @@ const applyPagination = (
   limit: number
 ): any[] => {
   return cryptoOrders && cryptoOrders.slice(page * limit, page * limit + limit);
+};
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '70%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4
 };
 
 function ActiveShowingTable() {
@@ -94,10 +108,64 @@ function ActiveShowingTable() {
 
   const theme = useTheme();
 
+  const mapRef = useRef();
+
+  const [mapView, setMapView] = useState(false);
+  const onMapViewHandlerClick = () => setMapView(true)
+  const onMapViewHandlerClose = () => setMapView(false)
+
+  const [currentPosition, setCurrentPosition] = useState({
+    lat: '',
+    lng: ''
+  });
+
+  const [mapViewBounds, setMapViewBounds] = useState({
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: 0
+  });
+
+  const onMapView = index => {
+    setCurrentPosition({
+      lat: myActiveShowing[index].lat,
+      lng: myActiveShowing[index].lng
+    })
+
+    setMapViewBounds({
+      x1: Number(myActiveShowing[index].lat)-0.05,
+      y1: Number(myActiveShowing[index].lng)-0.05,
+      x2: Number(myActiveShowing[index].lat)+0.05,
+      y2: Number(myActiveShowing[index].lng)+0.05,
+    })
+
+    onMapViewHandlerClick()
+  }
+
   return (
     // <Card>
       // <Divider />
       <div style={{width: '100%'}}>
+        <Modal
+        open={mapView}
+        onClose={onMapViewHandlerClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <MapContainer
+            bounds={[[mapViewBounds.x1, mapViewBounds.y1], [mapViewBounds.x2, mapViewBounds.y2]]}
+            style={{ height: '600px', width: '100%' }}
+            zoom={9}
+            ref={mapRef}
+          >
+            <Marker position={[currentPosition.lat, currentPosition.lng]}>
+            </Marker>
+            {/* <Polygon positions={polygon} /> */}
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </MapContainer>
+        </Box>
+      </Modal>
       <TableContainer>
         <Table>
           <TableHead>
@@ -219,6 +287,7 @@ function ActiveShowingTable() {
                         }}
                         color="inherit"
                         size="small"
+                        onClick={() => onMapView(index)}
                       >
                         <VisibilityIcon fontSize="small" />
                       </IconButton>

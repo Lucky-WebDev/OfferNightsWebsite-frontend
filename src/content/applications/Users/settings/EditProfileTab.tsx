@@ -354,7 +354,7 @@ function EditProfileTab() {
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
-                    Name:
+                    Brokerage Name:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>

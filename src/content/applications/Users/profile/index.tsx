@@ -7,6 +7,11 @@ import ProfileCover from './ProfileCover';
 import RecentActivity from './RecentActivity';
 import MyCards from './MyCards';
 import Addresses from './Addresses';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getAllAgents } from '../../../../actions/mapAction';
+import { getAllSeller } from '../../../../actions/sellerAction';
+import { getAllBuyers } from '../../../../actions/buyerAction';
 
 function ManagementUserProfile() {
   const user = {
@@ -20,6 +25,20 @@ function ManagementUserProfile() {
     location: 'Barcelona, Spain',
     followers: '465'
   };
+
+  const dispatch: any = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllAgents());
+  }, [])
+  
+  useEffect(() => {
+    dispatch(getAllBuyers());
+  }, [])
+
+  useEffect(() => {
+    dispatch(getAllSeller());
+  }, [])
 
   return (
     <div className="font-face-gm">

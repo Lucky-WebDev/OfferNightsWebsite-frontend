@@ -245,10 +245,6 @@ function ActiveShowingTab() {
       enqueueSnackbar('Please select or fill the current address.');
       return;
     }
-    if (isEmpty(showingItem.code)) {
-      enqueueSnackbar('Please select or fill the new Postal code.');
-      return;
-    }
     if (isEmpty(showingItem.price)) {
       enqueueSnackbar('Please fill the Price.');
       return;
@@ -334,10 +330,12 @@ function ActiveShowingTab() {
 
   useEffect(() => {
     console.log({ address });
-    setPosition({
-      lat: address.lat,
-      lng: address.lon
-    });
+    if (address) {
+      setPosition({
+        lat: address.lat,
+        lng: address.lon
+      });
+    }
   }, [address]);
 
   const onSelectChange = (newValue) => {

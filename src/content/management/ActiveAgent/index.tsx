@@ -18,11 +18,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllAgents } from '../../../actions/mapAction';
 import RecentOrders from './RecentOrders';
 import { StateType } from '../../../reducer/dataType';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../config/marker/farming-marker.png'),
+  iconUrl: require('../../../config/marker/farming-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 function ApplicationsTransactions() {
   const dispatch: any = useDispatch();
 
-  // const [center, setCenter] = useState({ lat: 53.00875725, lng: -102.34691034378578 })
   const ZOOM_LEVEL = 9;
   const mapRef = useRef();
 

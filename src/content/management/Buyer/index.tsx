@@ -10,6 +10,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllBuyers } from '../../../actions/buyerAction';
 import RecentOrders from './RecentOrders';
 import { StateType } from '../../../reducer/dataType';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('../../../config/marker/buyer-marker.png'),
+  iconUrl: require('../../../config/marker/buyer-marker.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 function ApplicationsTransactions() {
   const dispatch: any = useDispatch();
@@ -90,13 +99,13 @@ function ApplicationsTransactions() {
                       {buyer.address}
                     </Popup>
                   </Marker>
-                  {/* <Polygon positions={[[
+                  <Polygon positions={[[
                     [Number(buyer.lat)-Number(buyer.radius)/200, Number(buyer.lng)+Number(buyer.radius)/200],
                     [Number(buyer.lat)-Number(buyer.radius)/200, Number(buyer.lng)-Number(buyer.radius)/200],
                     [Number(buyer.lat)+Number(buyer.radius)/200, Number(buyer.lng)-Number(buyer.radius)/200],
                     [Number(buyer.lat)+Number(buyer.radius)/200, Number(buyer.lng)+Number(buyer.radius)/200],
                     [Number(buyer.lat)-Number(buyer.radius)/200, Number(buyer.lng)+Number(buyer.radius)/200],
-                  ]]} /> */}
+                  ]]} />
                   </>
                 ))}
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

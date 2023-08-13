@@ -375,7 +375,13 @@ function FarmAreaTab() {
                 <Marker position={position}>
                   <Popup>{mapInfo.address}</Popup>
                 </Marker>
-                <Polygon positions={polygon} />
+                <Polygon positions={[[
+                  [Number(position.lat)-Number(currentUser.radius)/200, Number(position.lng)+Number(currentUser.radius)/200],
+                  [Number(position.lat)-Number(currentUser.radius)/200, Number(position.lng)-Number(currentUser.radius)/200],
+                  [Number(position.lat)+Number(currentUser.radius)/200, Number(position.lng)-Number(currentUser.radius)/200],
+                  [Number(position.lat)+Number(currentUser.radius)/200, Number(position.lng)+Number(currentUser.radius)/200],
+                  [Number(position.lat)-Number(currentUser.radius)/200, Number(position.lng)+Number(currentUser.radius)/200],
+                ]]} />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
               </MapContainer>
