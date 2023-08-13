@@ -107,6 +107,8 @@ function FarmAreaTab() {
     lng: ''
   });
 
+  const [polygon, setPolygon] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [addShow, setAddShow] = useState(true);
   const handleOpen = () => {
@@ -215,6 +217,18 @@ function FarmAreaTab() {
             lat: lat,
             lng: lng
           });
+
+          const points = [
+            [
+              [Number(lat)-Number(currentUser.radius)/200, Number(lng)+Number(currentUser.radius)/200],
+              [Number(lat)-Number(currentUser.radius)/200, Number(lng)-Number(currentUser.radius)/200],
+              [Number(lat)+Number(currentUser.radius)/200, Number(lng)-Number(currentUser.radius)/200],
+              [Number(lat)+Number(currentUser.radius)/200, Number(lng)+Number(currentUser.radius)/200],
+              [Number(lat)-Number(currentUser.radius)/200, Number(lng)+Number(currentUser.radius)/200],
+            ]
+          ];
+
+          setPolygon(points)
         } catch (error) {
           console.log('Error', error);
         }
@@ -262,15 +276,7 @@ function FarmAreaTab() {
     [43.31166455, -56.44995099337655]
   ];
 
-  const polygon = [
-    [
-      [28.35, -81.56],
-      [28.35, -71.55],
-      [38.36, -71.55],
-      [38.36, -81.56],
-      [28.35, -81.56]
-    ]
-  ];
+  
 
   const [inputValue, setInputValue] = useState('');
   const [address, setAddress] = useState<AddressType>({
@@ -369,7 +375,7 @@ function FarmAreaTab() {
                 <Marker position={position}>
                   <Popup>{mapInfo.address}</Popup>
                 </Marker>
-                {/* <Polygon positions={polygon} /> */}
+                <Polygon positions={polygon} />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
               </MapContainer>

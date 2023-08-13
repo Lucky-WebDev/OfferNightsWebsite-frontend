@@ -4,7 +4,7 @@ import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import { Grid, Container, Card } from '@mui/material';
 import Footer from '../../../components/Footer';
 
-import { MapContainer, useMapEvents, TileLayer, Circle, Popup, Marker } from 'react-leaflet';
+import { MapContainer, useMapEvents, TileLayer, Circle, Popup, Marker, Polygon } from 'react-leaflet';
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBuyers } from '../../../actions/buyerAction';
@@ -84,11 +84,20 @@ function ApplicationsTransactions() {
             <Card>
               <MapContainer bounds={mapBounds} style={{ height: '650px', width: '100%' }} zoom={ZOOM_LEVEL} ref={mapRef}>
                 {allBuyerInfo.map((buyer) => (
+                  <>
                   <Marker key={buyer.id} position={[buyer.lat, buyer.lng]}>
                     <Popup>
                       {buyer.address}
                     </Popup>
                   </Marker>
+                  {/* <Polygon positions={[[
+                    [Number(buyer.lat)-Number(buyer.radius)/200, Number(buyer.lng)+Number(buyer.radius)/200],
+                    [Number(buyer.lat)-Number(buyer.radius)/200, Number(buyer.lng)-Number(buyer.radius)/200],
+                    [Number(buyer.lat)+Number(buyer.radius)/200, Number(buyer.lng)-Number(buyer.radius)/200],
+                    [Number(buyer.lat)+Number(buyer.radius)/200, Number(buyer.lng)+Number(buyer.radius)/200],
+                    [Number(buyer.lat)-Number(buyer.radius)/200, Number(buyer.lng)+Number(buyer.radius)/200],
+                  ]]} /> */}
+                  </>
                 ))}
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />

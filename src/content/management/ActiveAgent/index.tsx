@@ -10,7 +10,8 @@ import {
   TileLayer,
   Circle,
   Popup,
-  Marker
+  Marker,
+  Polygon
 } from 'react-leaflet';
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -79,7 +80,7 @@ function ApplicationsTransactions() {
   const epcotCenter = [28.373711392892478, -81.54936790466309];
 
   const allAgents: any = useSelector(
-    (state: StateType) => state.auth.activeArea
+    (state: StateType) => state.auth.allAgents
   );
 
   return (
@@ -110,9 +111,18 @@ function ApplicationsTransactions() {
 
                 {allAgents &&
                   allAgents.map((agent, index) => (
+                    <>
                       <Marker key={agent.id} position={[agent.lat, agent.lng]}>
                         <Popup>{agent.address}</Popup>
                       </Marker>
+                      <Polygon positions={[[
+                        [Number(agent.lat)-Number(agent.radius)/200, Number(agent.lng)+Number(agent.radius)/200],
+                        [Number(agent.lat)-Number(agent.radius)/200, Number(agent.lng)-Number(agent.radius)/200],
+                        [Number(agent.lat)+Number(agent.radius)/200, Number(agent.lng)-Number(agent.radius)/200],
+                        [Number(agent.lat)+Number(agent.radius)/200, Number(agent.lng)+Number(agent.radius)/200],
+                        [Number(agent.lat)-Number(agent.radius)/200, Number(agent.lng)+Number(agent.radius)/200],
+                      ]]} />
+                      </>
                     ))}
                 <MapClickHandler />
               </MapContainer>
