@@ -114,7 +114,7 @@ function Logo() {
           <Tooltip title="Version 1.0" arrow placement="right">
             <VersionBadge>3.1</VersionBadge>
           </Tooltip>
-          <LogoText>OfferNights</LogoText>
+          <LogoText>OFFERNIGHTS</LogoText>
         </LogoTextWrapper>
       </Box>
     </LogoWrapper>

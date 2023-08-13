@@ -113,7 +113,7 @@ function StatusComingSoon() {
               <Typography
                 variant="h3"
                 color="text.secondary"
-                fontWeight="normal"
+                fontWeight="bold"
                 sx={{ mb: 4 }}
               >
                 We're working on implementing the last features before our

@@ -22,9 +22,9 @@ function ManagementUserProfile() {
   };
 
   return (
-    <>
+    <div className="font-face-gm">
       <Helmet>
-        <title>OfferNights | Profile</title>
+        <title>OFFERNIGHTS | Profile</title>
       </Helmet>
       <Container sx={{ mt: 3 }} maxWidth="lg">
         <Grid
@@ -55,7 +55,7 @@ function ManagementUserProfile() {
         </Grid>
       </Container>
       <Footer />
-    </>
+    </div>
   );
 }
 

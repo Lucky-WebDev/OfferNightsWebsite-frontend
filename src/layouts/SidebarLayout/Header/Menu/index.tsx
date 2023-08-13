@@ -80,7 +80,7 @@ function HeaderMenu() {
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
   return (
-    <>
+    <div className="font-face-gm">
     {currentUser.status != "admin" ? (
       <ListWrapper
         sx={{
@@ -220,7 +220,7 @@ function HeaderMenu() {
           Modals
         </MenuItem>
       </Menu>
-    </>
+    </div>
   );
 }
 

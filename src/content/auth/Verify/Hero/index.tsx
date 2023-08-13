@@ -84,7 +84,7 @@ function Hero() {
             sx={{ lineHeight: 1.5, pb: 4 }}
             variant="h4"
             color="text.secondary"
-            fontWeight="normal"
+            fontWeight="bold"
           >
             Please verify your email address
           </TypographyH2>
@@ -94,7 +94,7 @@ function Hero() {
             variant="h4"
             textAlign={'center'}
             color="text.secondary"
-            fontWeight="normal"
+            fontWeight="bold"
           >
             You should verify your email address and then you can visit our website.<br /> 
             You can confirm the verification code for your email in Email Server and then you can inform us via below verification code field.
@@ -106,7 +106,7 @@ function Hero() {
                 variant="h4"
                 textAlign={'center'}
                 color="text.secondary"
-                fontWeight="normal"
+                fontWeight="bold"
               >
                 Resend Verification Code to {signUpInfo.email}
               </TypographyH2><br />

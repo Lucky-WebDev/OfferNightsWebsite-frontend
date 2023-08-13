@@ -85,7 +85,7 @@ function ApplicationsTransactions() {
   return (
     <>
       <Helmet>
-        <title>OfferNights | Active Agents</title>
+        <title>OFFERNIGHTS | Active Agents</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />

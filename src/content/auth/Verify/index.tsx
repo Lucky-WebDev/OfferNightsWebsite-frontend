@@ -19,7 +19,7 @@ function Verify() {
     
     <OverviewWrapper>
       <Helmet>
-        <title>OfferNights | Email verify</title>
+        <title>OFFERNIGHTS | Email verify</title>
       </Helmet>
       <Container maxWidth="lg">
         <Box display="flex" justifyContent="center" py={5} alignItems="center">

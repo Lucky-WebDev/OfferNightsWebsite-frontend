@@ -54,7 +54,7 @@ function Status404() {
             <Typography
               variant="h4"
               color="text.secondary"
-              fontWeight="normal"
+              fontWeight="bold"
               sx={{ mb: 4 }}
             >
               It's on us, we moved the content to a different page. The search

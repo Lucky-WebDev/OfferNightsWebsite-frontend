@@ -98,16 +98,19 @@ function Hero() {
         <Grid item md={10} lg={8} mx="auto">
           <LabelWrapper color="success">Version 1.0.0</LabelWrapper>
           <TypographyH1 sx={{ mb: 2 }} variant="h1">
-            OfferNights
+            OFFERNIGHTS
           </TypographyH1>
           <TypographyH2
             sx={{ lineHeight: 1.5, pb: 4 }}
             variant="h4"
             color="text.secondary"
-            fontWeight="normal"
+            fontWeight="bold"
           >
+            {/* <div className="font-face-gm"> */}
             Embark on a virtual journey around the globe and let our captivating travel blog transport you to breathtaking destinations, 
             inspiring you to explore the world like never before
+            {/* </div> */}
+            
           </TypographyH2>
           {isAuthenticated == false ? (
             <div>
@@ -197,7 +200,7 @@ function Hero() {
                   <b>Built with Typescript</b>
                 </Box>
                 <Typography component="span" variant="subtitle2">
-                  OfferNights
+                  OFFERNIGHTS
                 </Typography>
               </Typography>
             </Grid>

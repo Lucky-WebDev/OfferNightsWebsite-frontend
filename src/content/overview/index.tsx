@@ -21,7 +21,7 @@ function Overview() {
     <OverviewWrapper>
       <Header />
       <Helmet>
-        <title>OfferNights</title>
+        <title>OFFERNIGHTS</title>
       </Helmet>
       <Container maxWidth="lg">
         <Box display="flex" justifyContent="center" py={6} alignItems="center">

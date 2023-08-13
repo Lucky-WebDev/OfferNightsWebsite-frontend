@@ -82,7 +82,7 @@ function Status500() {
                 <Typography
                   variant="h4"
                   color="text.secondary"
-                  fontWeight="normal"
+                  fontWeight="bold"
                   sx={{ mb: 4 }}
                 >
                   The server encountered an internal error and was not able to
@@ -115,11 +115,11 @@ function Status500() {
               <Container maxWidth="sm">
                 <Box textAlign="center">
                   <TypographyPrimary variant="h1" sx={{ my: 2 }}>
-                    OfferNights
+                    OFFERNIGHTS
                   </TypographyPrimary>
                   <TypographySecondary
                     variant="h4"
-                    fontWeight="normal"
+                    fontWeight="bold"
                     sx={{ mb: 4 }}
                   >
                     High performance React template built with lots of powerful

@@ -78,7 +78,7 @@ function Hero() {
             sx={{ lineHeight: 1.5, pb: 4 }}
             variant="h4"
             color="text.secondary"
-            fontWeight="normal"
+            fontWeight="bold"
           >
             Please sign in using your account
           </TypographyH2>

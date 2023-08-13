@@ -72,7 +72,7 @@ function ManagementUserSettings() {
   return (
     <>
       <Helmet>
-        <title>OfferNights | Profile Setting</title>
+        <title>OFFERNIGHTS | Profile Setting</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />

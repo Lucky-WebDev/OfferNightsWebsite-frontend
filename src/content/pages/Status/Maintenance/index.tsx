@@ -43,7 +43,7 @@ function StatusMaintenance() {
               <Typography
                 variant="h3"
                 color="text.secondary"
-                fontWeight="normal"
+                fontWeight="bold"
                 sx={{ mb: 4 }}
               >
                 We apologize for any inconveniences caused

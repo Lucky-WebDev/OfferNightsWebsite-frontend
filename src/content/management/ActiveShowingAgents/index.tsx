@@ -19,7 +19,7 @@ function ApplicationsTransactions() {
   return (
     <>
       <Helmet>
-        <title>Transactions - Applications</title>
+        <title>OFFERNIGTHS | Active Showing Agents</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />

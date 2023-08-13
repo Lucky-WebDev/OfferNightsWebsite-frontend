@@ -122,7 +122,7 @@ function Hero() {
             sx={{ lineHeight: 1.5, pb: 4 }}
             variant="h4"
             color="text.secondary"
-            fontWeight="normal"
+            fontWeight="bold"
           >
             Please sign up using your information
           </TypographyH2>
@@ -132,7 +132,7 @@ function Hero() {
               variant="h4"
               textAlign={'left'}
               color="text.secondary"
-              fontWeight="normal"
+              fontWeight="bold"
             >
               Type
           </TypographyH2>
@@ -156,7 +156,7 @@ function Hero() {
               variant="h4"
               textAlign={'left'}
               color="text.secondary"
-              fontWeight="normal"
+              fontWeight="bold"
             >
               Personal Information
           </TypographyH2>
@@ -171,7 +171,7 @@ function Hero() {
               variant="h4"
               textAlign={'left'}
               color="text.secondary"
-              fontWeight="normal"
+              fontWeight="bold"
             >
               Contact Information
           </TypographyH2>
@@ -184,7 +184,7 @@ function Hero() {
               variant="h4"
               textAlign={'left'}
               color="text.secondary"
-              fontWeight="normal"
+              fontWeight="bold"
             >
               Account Information
           </TypographyH2>
@@ -200,7 +200,7 @@ function Hero() {
                 variant="h4"
                 textAlign={'left'}
                 color="text.secondary"
-                fontWeight="normal"
+                fontWeight="bold"
               >
                 Yes, I understand and agree to the Terms of Service and Privacy Policy.
             </TypographyH2>

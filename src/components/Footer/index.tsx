@@ -8,6 +8,7 @@ const FooterWrapper = styled(Container)(
 
 function Footer() {
   return (
+      
     <FooterWrapper className="footer-wrapper">
       <Box
         pb={4}
@@ -18,7 +19,9 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2023 - OfferNights                
+            <div className="font-face-gm">
+            &copy; 2023 - OFFERNIGHTS   
+            </div>             
           </Typography>
         </Box>
         <Typography
@@ -27,14 +30,17 @@ function Footer() {
           }}
           variant="subtitle1"
         >
+            <div className="font-face-gm">
+
           Made by SMiLe Development Team(SDT){' '}
           <Link
-            href="https://offernights.com"
+            href="https://OFFERNIGHTS.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            offernights.com
+            OFFERNIGHTS.com
           </Link>
+            </div>
         </Typography>
       </Box>
     </FooterWrapper>

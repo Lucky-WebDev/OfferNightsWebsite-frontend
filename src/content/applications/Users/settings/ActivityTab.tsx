@@ -53,13 +53,13 @@ function ActivityTab() {
             <Link href="#" underline="hover">
               #managers
             </Link>
-            , OfferNights.
+            , OFFERNIGHTS.
           </>
         }
       />
       <Box px={3} pb={2}>
-        <Typography variant="h4" fontWeight="normal">
-          Welcome to our websites - OfferNights
+        <Typography variant="h4" fontWeight="bold">
+          Welcome to our websites - OFFERNIGHTS
         </Typography>
       </Box>
       <CardMedia

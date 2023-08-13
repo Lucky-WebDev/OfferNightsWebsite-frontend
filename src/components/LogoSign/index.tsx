@@ -103,7 +103,7 @@ function Logo() {
 
   return (
     <TooltipWrapper
-      title="OfferNights"
+      title="OFFERNIGHTS"
       arrow
     >
       <LogoWrapper to="/overview">

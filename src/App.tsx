@@ -18,6 +18,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import 'leaflet/dist/leaflet.css'
 import { SnackbarProvider } from 'notistack';
 
+import './App.css'
+
 function App() {
   const content = useRoutes(router);
   const navigate: any = useNavigate()
@@ -33,25 +35,28 @@ function App() {
   }, []);
 
   return (
-    <React.StrictMode>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <CssBaseline />
-              <SnackbarProvider
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-              >
-              {content}
-              </SnackbarProvider>
-            </LocalizationProvider>
-          </ThemeProvider>
-        </PersistGate>
-      </Provider>
-    </React.StrictMode>
+    
+      <React.StrictMode>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <ThemeProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <CssBaseline />
+                <SnackbarProvider
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                >
+                  <div className="container font-face-gm">
+                  {content}
+                  </div>
+                </SnackbarProvider>
+              </LocalizationProvider>
+            </ThemeProvider>
+          </PersistGate>
+        </Provider>
+      </React.StrictMode>
   );
 }
 export default App;

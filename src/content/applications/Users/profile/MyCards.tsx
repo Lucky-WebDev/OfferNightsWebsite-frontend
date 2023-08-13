@@ -109,7 +109,7 @@ function MyCards() {
                   alt="Visa"
                 />
                 <Box>
-                  <Typography variant="h3" fontWeight="normal">
+                  <Typography variant="h3" fontWeight="bold">
                     •••• 6879
                   </Typography>
                   <Typography variant="subtitle2">
@@ -155,7 +155,7 @@ function MyCards() {
                   alt="Visa"
                 />
                 <Box>
-                  <Typography variant="h3" fontWeight="normal">
+                  <Typography variant="h3" fontWeight="bold">
                     •••• 4634
                   </Typography>
                   <Typography variant="subtitle2">

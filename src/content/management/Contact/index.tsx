@@ -76,7 +76,7 @@ function ApplicationsMessenger() {
   return (
     <>
       <Helmet>
-        <title>OfferNights | Contact Us</title>
+        <title>OFFERNIGHTS | Contact Us</title>
       </Helmet>
       <RootWrapper className="Mui-FixedWrapper">
         <DrawerWrapperMobile

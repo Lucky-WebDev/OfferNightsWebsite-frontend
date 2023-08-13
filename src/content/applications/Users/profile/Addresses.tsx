@@ -37,7 +37,7 @@ function Addresses() {
             </Typography>
             <Box sx={{ minHeight: { xs: 0, md: 242 } }} p={2}>
               <Typography variant="h5">Kadin Westervelt</Typography>
-              <Typography variant="h5" sx={{ py: 1 }} fontWeight="normal">
+              <Typography variant="h5" sx={{ py: 1 }} fontWeight="bold">
                 714-650-6297
               </Typography>
               <Typography variant="subtitle1">
@@ -67,7 +67,7 @@ function Addresses() {
             </Typography>
             <Box sx={{ minHeight: { xs: 0, md: 242 } }} p={2}>
               <Typography variant="h5">Kadin Westervelt</Typography>
-              <Typography variant="h5" sx={{ py: 1 }} fontWeight="normal">
+              <Typography variant="h5" sx={{ py: 1 }} fontWeight="bold">
                 714-650-6297
               </Typography>
               <Typography variant="subtitle1">

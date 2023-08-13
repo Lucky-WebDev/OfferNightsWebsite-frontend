@@ -18,7 +18,7 @@ function Register() {
   return (
     <OverviewWrapper>
       <Helmet>
-        <title>OfferNights | Sign in</title>
+        <title>OFFERNIGHTS | Sign in</title>
       </Helmet>
       <Container maxWidth="lg">
         <Box display="flex" justifyContent="center" py={5} alignItems="center">
