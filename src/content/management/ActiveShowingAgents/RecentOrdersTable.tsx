@@ -233,7 +233,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                         </Box>
                       </Modal>
                       <Link to={''} onClick={onMapViewHandlerClick}>
-                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
                       </Link>
                     </Typography>
                   </TableCell>

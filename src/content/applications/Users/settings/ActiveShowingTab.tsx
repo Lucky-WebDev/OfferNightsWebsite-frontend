@@ -28,7 +28,8 @@ import {
   Select,
   MenuItem,
   LinearProgress,
-  Autocomplete
+  Autocomplete,
+  Switch
 } from '@mui/material';
 import L from 'leaflet';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
@@ -46,6 +47,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
 import isEmpty from '../../../../validation/is-empty';
+import useDebounce from '../../../../hook/useDebounce';
 
 import {
   addActiveShowing,
@@ -146,6 +148,8 @@ function ActiveShowingTab() {
     state: null,
     region: null,
     village: null,
+    highway: null,
+    suburb: null,
     road: null,
     houseNumber: null,
     listingAgent: null
@@ -159,7 +163,6 @@ function ActiveShowingTab() {
       click: async (e) => {
         setProgress(true);
         const { lat, lng } = e.latlng;
-        const api_key: string = 'AIzaSyBaBJNvo7jQhIkQKRFalCVeWDMVO-CXOD0';
 
         try {
           let url =
@@ -191,7 +194,9 @@ function ActiveShowingTab() {
                 quarter: data.address.quarter,
                 village: data.address.village,
                 road: data.address.road,
-                houseNumber: data.address.houseNumber,
+                houseNumber: data.address.house,
+                highway: data.address.highway,
+                suburb: data.address.suburb,
                 lat: lat,
                 lng: lng,
                 address: display_name,
@@ -214,8 +219,63 @@ function ActiveShowingTab() {
         }
       }
     });
-
     return null;
+  };
+
+  const positionToPlace = async (lat, lng) => {
+    try {
+      let url =
+        'https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+        '&lat=' +
+        lat +
+        '&lon=' +
+        lng;
+
+      await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+        // headers: {
+        //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+        // }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const display_name = data.display_name;
+          const place_id = data.address.postcode;
+
+          setShowingItem({
+            ...showingItem,
+            country: data.address.country,
+            state: data.address.state,
+            city: data.address.city,
+            county: data.address.county,
+            region: data.address.region,
+            quarter: data.address.quarter,
+            village: data.address.village,
+            road: data.address.road,
+            highway: data.address.highway,
+            suburb: data.address.suburb,
+            houseNumber: data.address.houseNumber,
+            lat: lat,
+            lng: lng,
+            address: display_name,
+            code: place_id
+          });
+
+          console.log(data)
+        })
+        .catch((err) => console.log(err));
+
+      setPosition({
+        lat: lat,
+        lng: lng
+      });
+
+      setAddShow(false);
+      setProgress(false);
+    } catch (error) {
+      console.log('Error', error);
+    }
   };
 
   const onChange = (e) => {
@@ -223,12 +283,6 @@ function ActiveShowingTab() {
       ...showingItem,
       [e.target.name]: e.target.value
     });
-  };
-
-  const onAddLocation = (e) => {
-    e.preventDefault();
-
-    handleMapClose();
   };
 
   const onSaveActiveShowing = (e) => {
@@ -276,6 +330,8 @@ function ActiveShowingTab() {
       village: showingItem.village,
       road: showingItem.road,
       houseNumber: showingItem.houseNumber,
+      highway: showingItem.highway,
+      suburb: showingItem.suburb,
       address: showingItem.address,
       code: showingItem.code,
       lat: showingItem.lat,
@@ -291,18 +347,28 @@ function ActiveShowingTab() {
     dispatch(addActiveShowing(activeShowing));
   };
 
-  const [inputValue, setInputValue] = useState('');
+  const [place, setPlace] = useState({
+    street: '',
+    city: '',
+    county: '',
+    state: '',
+    code: ''
+  });
+
   const [address, setAddress] = useState<AddressType>({
     lat: '',
     lon: '',
     label: ''
   });
+
   const [options, setOptions] = useState([]);
 
   const placeToPosition = async (place) => {
     try {
       let url =
-        'https://nominatim.openstreetmap.org/search?format=json&q=' + place;
+        'https://nominatim.openstreetmap.org/search?format=json&q=' +
+        place +
+        '&limit=20';
 
       await fetch(url, {
         method: 'GET',
@@ -324,99 +390,44 @@ function ActiveShowingTab() {
     }
   };
 
-  useEffect(() => {
-    placeToPosition(inputValue);
-  }, [inputValue]);
+  const onPlaceChange = (e) => {
+    setPlace({
+      ...place,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const [inputValue, setInputValue] = useState('');
+  const debouncedInput: string = useDebounce<string>(inputValue, 2000);
 
   useEffect(() => {
-    console.log({ address });
+    if (debouncedInput) {
+      placeToPosition(debouncedInput);
+    } else {
+      placeToPosition(debouncedInput);
+    }
+  }, [debouncedInput]);
+
+  useEffect(() => {
     if (address) {
       setPosition({
         lat: address.lat,
         lng: address.lon
       });
+
+      positionToPlace(address.lat, address.lon);
     }
+
   }, [address]);
 
   const onSelectChange = (newValue) => {
     setAddress(newValue);
-
-    placeToPosition(inputValue);
+    // placeToPosition(newValue);
   };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Modal
-          open={mapOpen}
-          onClose={handleMapClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={mapStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              OpenStreetMap
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              You can select your active area. And then you can click Add
-              button.
-            </Typography>
-
-            <MapContainer
-              bounds={mapBounds}
-              style={{ height: '600px', width: '100%' }}
-              zoom={ZOOM_LEVEL}
-              ref={mapRef}
-            >
-              {progress ? (
-                <LoadingSpinner loading={progress} />
-              ) : (
-                <>
-                  <MapClickHandler />
-                  <Marker position={position}>
-                    <Popup>{showingItem.address}</Popup>
-                  </Marker>
-                  <Circle center={position} pathOptions={{ color: 'red' }} />
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                </>
-              )}
-            </MapContainer>
-            <br />
-            <Box
-                width={'100%'}
-                sx={{ display: 'flex', justifyContent: 'space-between' }}
-              >
-                <Button
-                  startIcon={<UploadTwoToneIcon />}
-                  variant="contained"
-                  disabled={addShow}
-                  onClick={handleClickOpenConfirm}
-                >
-                  Add Location
-                </Button>
-                <Typography id="modal-modal-title" variant="h6" component="h2" mt={2}>
-                  Please input place name and then click correct position. 
-                </Typography>
-                <Autocomplete
-                  value={address}
-                  onChange={(event: any, newValue: string | null) => {
-                    onSelectChange(newValue);
-                  }}
-                  inputValue={inputValue}
-                  onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue);
-                  }}
-                  id="controllable-states-demo"
-                  options={options}
-                  sx={{ width: 300 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Address" />
-                  )}
-                />
-              </Box>
-          </Box>
-        </Modal>
-
         <Modal
           open={open}
           onClose={handleClose}
@@ -424,234 +435,244 @@ function ActiveShowingTab() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Grid container spacing={0}>
-              <Grid item xs={12}>
-                <Box
-                  pt={2}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={8} md={9}>
-                    <Button variant="outlined" onClick={handleMapOpen}>
-                      Select the position on OpenStreetMap
-                    </Button>
-                  </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      *Listing:
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12} md={4} spacing={1} container>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Autocomplete
+                    value={address}
+                    onChange={(event: any, newValue: string | null) => {
+                      onSelectChange(newValue);
+                    }}
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => {
+                      setInputValue(newInputValue);
+                    }}
+                    id="controllable-states-demo"
+                    options={options}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Address" />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid item xs={12} sm={12} md={12}>
                     <TextField
+                      label="House Name | Street"
+                      required
+                      name="street"
+                      value={showingItem.houseNumber ?? '' + showingItem.road ?? '' + showingItem.highway ?? '' + showingItem.suburb ?? ''}
+                      onChange={onPlaceChange}
+                      disabled
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <TextField
+                      label="City"
+                      required
+                      name="city"
+                      value={showingItem.city ?? ''}
+                      onChange={onPlaceChange}
+                      disabled
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <TextField
+                      label="County"
+                      required
+                      name="county"
+                      value={showingItem.county ?? ''}
+                      onChange={onPlaceChange}
+                      disabled
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  <TextField
+                    label="State"
+                    required
+                    name="state"
+                    value={showingItem.state ?? ''}
+                    onChange={onPlaceChange}
+                    disabled
+                    variant="outlined"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  <TextField
+                    label="Postal Code"
+                    required
+                    name="code"
+                    value={showingItem.code ?? ''}
+                    onChange={onPlaceChange}
+                    disabled
+                    variant="outlined"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button fullWidth variant="contained">
+                    Search
+                  </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider orientation="horizontal" />
+                </Grid>
+
+                <Divider />
+                <Grid item xs={12} container>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Listing"
                       name="listing"
                       value={showingItem.listing}
                       onChange={onChange}
                       variant="outlined"
-                      style={{ width: '50%' }}
+                      fullWidth
                     />
                   </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      Offer Date:
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
+                </Grid>
+                <Grid item xs={12} container>
+                  <Grid item xs={12} sm={10} md={10}>
                     <TextField
                       name="offerDate"
                       type="date"
                       value={showingItem.offerDate}
                       onChange={onChange}
                       variant="outlined"
-                      style={{ width: '50%' }}
+                      fullWidth
                     />
                   </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      *Address:
-                    </Box>
+                  <Grid item xs={12} sm={2} md={2}>
+                    <Switch />
                   </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
+                </Grid>
+                <Grid item xs={12} container>
+                  <Grid item xs={12} sm={12} md={12}>
                     <TextField
-                      name="address"
-                      value={showingItem.address}
-                      onChange={onChange}
-                      variant="outlined"
-                      style={{ width: '50%' }}
-                    />
-                  </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      *Postal Code:
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
-                    <TextField
-                      name="code"
-                      value={showingItem.code}
-                      onChange={onChange}
-                      variant="outlined"
-                      style={{ width: '50%' }}
-                    />
-                  </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      Unit:
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
-                    <TextField
+                      label="Unit"
                       name="unit"
                       value={showingItem.unit}
                       onChange={onChange}
                       variant="outlined"
-                      style={{ width: '50%' }}
+                      fullWidth
                     />
                   </Grid>
-                </Box>
+                </Grid>
+                <Grid item xs={12} container>
+                  <TextField
+                    label="Price"
+                    name="price"
+                    type="number"
+                    value={showingItem.price}
+                    onChange={onChange}
+                    variant="outlined"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} container>
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                    mt={2}
+                  >
+                    Are you listing a agent?
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} container>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={showingItem.listingAgent}
+                    name="listingAgent"
+                    label="*Listing Agent"
+                    onChange={onChange}
+                    defaultValue={'Yes'}
+                    fullWidth
+                  >
+                    <MenuItem value={'Yes'}>Yes</MenuItem>
+                    <MenuItem value={'No'}>No</MenuItem>
+                  </Select>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                  >
+                    <Grid item xs={12} sm={12} md={12}>
+                      <SnackbarProvider
+                        anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'center'
+                        }}
+                      ></SnackbarProvider>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={handleClickOpenConfirm}
+                      >
+                        Add Showing
+                      </Button>
+                      <Dialog
+                        open={openConfirm}
+                        onClose={handleCloseConfirm}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          Active Showing Agent
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Do you really add new Active showing agent?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleCloseConfirm}>Disagree</Button>
+                          <Button onClick={onSaveActiveShowing} autoFocus>
+                            Agree
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </Grid>
+                  </Box>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
+              <Grid item xs={12} sm={12} md={8}>
+                <MapContainer
+                  bounds={mapBounds}
+                  style={{ height: '100%', width: '100%' }}
+                  zoom={ZOOM_LEVEL}
+                  ref={mapRef}
                 >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      *List Price:
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
-                    <TextField
-                      name="price"
-                      type="number"
-                      value={showingItem.price}
-                      onChange={onChange}
-                      variant="outlined"
-                      style={{ width: '50%' }}
-                    />
-                  </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                    <Box pr={3} pt={1.5}>
-                      *Are you listing Agent? :
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={showingItem.listingAgent}
-                      name="listingAgent"
-                      style={{ width: '50%' }}
-                      label="*Listing Agent"
-                      onChange={onChange}
-                      defaultValue={'Yes'}
-                    >
-                      <MenuItem value={'Yes'}>Yes</MenuItem>
-                      <MenuItem value={'No'}>No</MenuItem>
-                    </Select>
-                  </Grid>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box
-                  p={3}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
-                >
-                  <Grid item xs={12} sm={8} md={9}>
-                    <SnackbarProvider
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center'
-                      }}
-                    ></SnackbarProvider>
-                    <Button
-                      variant="contained"
-                      onClick={handleClickOpenConfirm}
-                    >
-                      Add Active Showing
-                    </Button>
-                    <Dialog
-                      open={openConfirm}
-                      onClose={handleCloseConfirm}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        Active Showing Agent
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          Do you really add new Active showing agent?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleCloseConfirm}>Disagree</Button>
-                        <Button onClick={onSaveActiveShowing} autoFocus>
-                          Agree
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </Grid>
-                </Box>
+                  {progress ? (
+                    <LoadingSpinner loading={progress} />
+                  ) : (
+                    <>
+                      <MapClickHandler />
+                      <Marker position={[address.lat ?? 0, address.lon ?? 0]}>
+                        <Popup>{showingItem.address}</Popup>
+                      </Marker>
+                      {/* <Circle
+                        center={position}
+                        pathOptions={{ color: 'red' }}
+                      /> */}
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    </>
+                  )}
+                </MapContainer>
               </Grid>
             </Grid>
           </Box>
@@ -665,7 +686,7 @@ function ActiveShowingTab() {
                   variant: 'subtitle2',
                   lineHeight: 1
                 }}
-                primary="Add Active Showing"
+                primary="Add Showing"
                 secondary="You can add your active showing"
               />
               <SnackbarProvider
@@ -675,7 +696,7 @@ function ActiveShowingTab() {
                 }}
               ></SnackbarProvider>
               <Button size="large" variant="outlined" onClick={handleOpen}>
-                <AddLocationAltIcon /> Active Showing
+                <AddLocationAltIcon /> Add Showing
               </Button>
             </ListItem>
             <Divider component="li" />

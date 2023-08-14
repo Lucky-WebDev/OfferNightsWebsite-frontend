@@ -42,6 +42,7 @@ import SuspenseLoader from '../../../../components/SuspenseLoader';
 
 import { addLocation, getActiveArea } from '../../../../actions/mapAction';
 import { enqueueSnackbar } from 'notistack';
+import useDebounce from '../../../../hook/useDebounce';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -144,6 +145,8 @@ function FarmAreaTab() {
     region: null,
     village: null,
     road: null,
+    highway: null,
+    suburb: null,
     houseNumber: null,
     lat: null,
     lng: null,
@@ -202,6 +205,8 @@ function FarmAreaTab() {
                 quarter: data.address.quarter,
                 village: data.address.village,
                 road: data.address.road,
+                highway: data.address.highway,
+                suburb: data.address.suburb,
                 houseNumber: data.address.houseNumber,
                 lat: lat,
                 lng: lng,
@@ -254,6 +259,8 @@ function FarmAreaTab() {
       quarter: mapInfo.quarter,
       village: mapInfo.village,
       road: mapInfo.road,
+      highway: mapInfo.highway,
+      suburb: mapInfo.suburb,
       houseNumber: mapInfo.houseNumber,
       address: mapInfo.address,
       code: mapInfo.code,
@@ -311,18 +318,77 @@ function FarmAreaTab() {
     }
   };
 
-  useEffect(() => {
-    placeToPosition(inputValue);
-  }, [inputValue]);
+  const positionToPlace = async (lat, lng) => {
+    try {
+      let url =
+        'https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+        '&lat=' +
+        lat +
+        '&lon=' +
+        lng;
+
+      await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+        // headers: {
+        //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+        // }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const display_name = data.display_name;
+          const place_id = data.address.postcode;
+
+          setMapInfo({
+            ...mapInfo,
+            country: data.address.country,
+            state: data.address.state,
+            city: data.address.city,
+            county: data.address.county,
+            region: data.address.region,
+            quarter: data.address.quarter,
+            village: data.address.village,
+            road: data.address.road,
+            highway: data.address.highway,
+            suburb: data.address.suburb,
+            houseNumber: data.address.houseNumber,
+            lat: lat,
+            lng: lng,
+            address: display_name,
+            code: place_id
+          });
+        })
+        .catch((err) => console.log(err));
+
+      setPosition({
+        lat: lat,
+        lng: lng
+      });
+
+      setAddShow(false);
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  const debouncedInput: string = useDebounce<string>(inputValue, 2000);
 
   useEffect(() => {
-    console.log({ address });
+    if (debouncedInput) {
+      placeToPosition(debouncedInput);
+    } else {
+      placeToPosition(debouncedInput);
+    }
+  }, [debouncedInput]);
+
+  useEffect(() => {
     if (address) {
       setPosition({
         lat: address.lat,
         lng: address.lon
       });
     }
+    positionToPlace(address.lat, address.lon);
   }, [address]);
 
   const onSelectChange = (newValue) => {
@@ -413,7 +479,7 @@ function FarmAreaTab() {
                   }}
                   id="controllable-states-demo"
                   options={options}
-                  sx={{ width: 300 }}
+                  sx={{ width: 600 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Address" />
                   )}

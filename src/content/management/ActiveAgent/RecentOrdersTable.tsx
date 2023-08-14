@@ -209,7 +209,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               <TableCell>City</TableCell>
               <TableCell>Place</TableCell>
               <TableCell align="right">Postal Code</TableCell>
-              <TableCell align="right">Radius</TableCell>
+              {/* <TableCell align="right">Radius</TableCell> */}
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -262,7 +262,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       noWrap
                       >
                       <Link to={''} onClick={() => onMapView(index)}>
-                        {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                        {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}  {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
                       </Link>
                     </Typography>
                   </TableCell>
@@ -277,7 +277,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       {cryptoOrder.code}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
+                  {/* <TableCell align="right">
                     <Typography
                       variant="body1"
                       fontWeight="bold"
@@ -287,7 +287,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     >
                       {cryptoOrder.radius} Km
                     </Typography>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align="right">
                     <Tooltip title={
                       "Created Date : " + cryptoOrder.createdDate 

@@ -218,7 +218,7 @@ function ActiveShowingTable() {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''}
+                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
                     </Typography>
                   </TableCell>
                   <TableCell>

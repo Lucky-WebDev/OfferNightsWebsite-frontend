@@ -196,7 +196,7 @@ function RecentOrdersTable() {
                       gutterBottom
                       noWrap
                     >
-                      {area.county ?? ''} {area.region ?? ''} {area.quarter ?? ''} {area.village ?? ''} {area.road ?? ''}{area.houseNumber ?? ''}
+                      {area.county ?? ''} {area.region ?? ''} {area.quarter ?? ''} {area.village ?? ''} {area.road ?? ''}{area.houseNumber ?? ''} {area.highway ?? ''} {area.suburb ?? ''}
                     </Typography>
                   </TableCell>
                   <TableCell>

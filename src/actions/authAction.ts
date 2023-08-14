@@ -44,7 +44,7 @@ export const checkToken = (data: any) => async dispatch => {
       token: data.token,
       email: data.email
     }
-    const res = await axios.post(`${API_VERIFY}/check-token`, token);
+    const res = await axios.get(`${API_VERIFY}/check-token/${data.email}${data.token}`);
 
     if(res.data.data.flag == true) {
       console.log(data)
