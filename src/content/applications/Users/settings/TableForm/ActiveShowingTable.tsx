@@ -1,15 +1,7 @@
 import { FC, ChangeEvent, useState, useRef } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
-import PropTypes from 'prop-types';
 import {
   Tooltip,
-  Divider,
   Box,
-  FormControl,
-  InputLabel,
-  Card,
-  Checkbox,
   IconButton,
   Table,
   TableBody,
@@ -18,17 +10,8 @@ import {
   TablePagination,
   TableRow,
   TableContainer,
-  Select,
-  MenuItem,
   Typography,
   useTheme,
-  CardHeader,
-  DialogTitle,
-  DialogContent,
-  Button,
-  DialogActions,
-  DialogContentText,
-  Dialog,
   Modal
 } from '@mui/material';
 
@@ -71,9 +54,6 @@ function ActiveShowingTable() {
 
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  const [filters, setFilters] = useState<Filters>({
-    status: null
-  });
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user)
 
@@ -143,8 +123,6 @@ function ActiveShowingTable() {
   }
 
   return (
-    // <Card>
-      // <Divider />
       <div style={{width: '100%'}}>
         <Modal
         open={mapView}
@@ -161,7 +139,6 @@ function ActiveShowingTable() {
           >
             <Marker position={[currentPosition.lat, currentPosition.lng]}>
             </Marker>
-            {/* <Polygon positions={polygon} /> */}
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </MapContainer>
         </Box>

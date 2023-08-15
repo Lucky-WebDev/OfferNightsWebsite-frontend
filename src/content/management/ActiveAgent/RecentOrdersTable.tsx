@@ -1,15 +1,11 @@
 import { FC, ChangeEvent, useState, useRef } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
   Box,
   FormControl,
-  InputLabel,
   Card,
-  Checkbox,
   IconButton,
   Table,
   TableBody,
@@ -18,8 +14,6 @@ import {
   TablePagination,
   TableRow,
   TableContainer,
-  Select,
-  MenuItem,
   Typography,
   useTheme,
   CardHeader,
@@ -29,12 +23,8 @@ import {
 
 import { CryptoOrderStatus } from '../../../models/crypto_order';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import SignalWifiStatusbar4BarIcon from '@mui/icons-material/SignalWifiStatusbar4Bar';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
-import SignalWifiStatusbarConnectedNoInternet4Icon from '@mui/icons-material/SignalWifiStatusbarConnectedNoInternet4';
-import BulkActions from './BulkActions';
-import { ContactMailOutlined } from '@mui/icons-material';
-import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Polygon, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -92,10 +82,7 @@ const applyPagination = (
 };
 
 const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
-  const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
-    []
-  );
-  const selectedBulkActions = selectedCryptoOrders.length > 0;
+  
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [filters, setFilters] = useState<Filters>({
@@ -116,11 +103,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     page,
     limit
   );
-
-  const mapBounds: any = [
-    [69.5335129, -153.8220681],
-    [43.31166455, -56.44995099337655]
-  ];
 
   const [mapView, setMapView] = useState(false);
   const onMapViewHandlerClick = () => setMapView(true)
@@ -209,7 +191,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               <TableCell>City</TableCell>
               <TableCell>Place</TableCell>
               <TableCell align="right">Postal Code</TableCell>
-              {/* <TableCell align="right">Radius</TableCell> */}
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -277,17 +258,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       {cryptoOrder.code}
                     </Typography>
                   </TableCell>
-                  {/* <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.radius} Km
-                    </Typography>
-                  </TableCell> */}
                   <TableCell align="right">
                     <Tooltip title={
                       "Created Date : " + cryptoOrder.createdDate 

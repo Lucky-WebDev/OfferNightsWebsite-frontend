@@ -1,4 +1,4 @@
-import { Stack, Box, Button, Container, Grid, Typography, TextField, Select, MenuItem, Checkbox } from '@mui/material';
+import { Stack, Button, Container, Grid, Typography, TextField, Select, MenuItem, Checkbox } from '@mui/material';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
@@ -12,8 +12,6 @@ import {signUp} from '../../../../actions/authAction';
 
 import isEmail from '../../../../validation/is-email';
 import isEmpty from '../../../../validation/is-empty';
-
-import Verify from '../../../../content/auth/Verify'
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `

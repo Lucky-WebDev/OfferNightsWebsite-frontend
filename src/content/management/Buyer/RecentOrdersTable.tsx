@@ -1,15 +1,11 @@
 import { FC, ChangeEvent, useState, useRef } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
   Box,
   FormControl,
-  InputLabel,
   Card,
-  Checkbox,
   IconButton,
   Table,
   TableBody,
@@ -18,8 +14,6 @@ import {
   TablePagination,
   TableRow,
   TableContainer,
-  Select,
-  MenuItem,
   Typography,
   useTheme,
   CardHeader,
@@ -27,14 +21,9 @@ import {
   Modal
 } from '@mui/material';
 
-import Label from '../../../components/Label';
-import { CryptoOrder, CryptoOrderStatus } from '../../../models/crypto_order';
+import { CryptoOrderStatus } from '../../../models/crypto_order';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import SignalWifiStatusbar4BarIcon from '@mui/icons-material/SignalWifiStatusbar4Bar';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
-import SignalWifiStatusbarConnectedNoInternet4Icon from '@mui/icons-material/SignalWifiStatusbarConnectedNoInternet4';
-import BulkActions from './BulkActions';
-import { ContactMailOutlined } from '@mui/icons-material';
 
 import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
@@ -80,7 +69,6 @@ const applyFilters = (
     if (filters.status && cryptoOrder.status !== filters.status) {
       matches = false;
     }
-
     return matches;
   });
 };
@@ -94,34 +82,11 @@ const applyPagination = (
 };
 
 const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
-  const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
-    []
-  );
-  const selectedBulkActions = selectedCryptoOrders.length > 0;
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [filters, setFilters] = useState<Filters>({
     status: null
   });
-
-  const statusOptions = [
-    {
-      id: 'all',
-      name: 'All'
-    },
-    {
-      id: 'completed',
-      name: 'Completed'
-    },
-    {
-      id: 'pending',
-      name: 'Pending'
-    },
-    {
-      id: 'failed',
-      name: 'Failed'
-    }
-  ];
 
   const handlePageChange = (event: any, newPage: number): void => {
     setPage(newPage);
@@ -139,11 +104,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   );
 
   const theme = useTheme();
-
-  const mapBounds: any = [
-    [69.5335129, -153.8220681],
-    [43.31166455, -56.44995099337655]
-  ];
 
   const [mapView, setMapView] = useState(false);
   const onMapViewHandlerClick = () => setMapView(true)

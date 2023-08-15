@@ -12,12 +12,8 @@ import {
 import { styled } from '@mui/material/styles';
 
 import ArrowBackTwoToneIcon from '@mui/icons-material/ArrowBackTwoTone';
-import ArrowForwardTwoToneIcon from '@mui/icons-material/ArrowForwardTwoTone';
-import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
-import MoreHorizTwoToneIcon from '@mui/icons-material/MoreHorizTwoTone';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
-import { Link } from 'react-router-dom';
 
 const Input = styled('input')({
   display: 'none'
@@ -105,29 +101,12 @@ const ProfileCover = ({ user }) => {
         <CardMedia image={user.coverImg} />
       </CardCover>
       <AvatarWrapper>
-        {/* <Avatar variant="rounded" alt={user.name} src={currentUser.avatar} /> */}
-        {/* <ButtonUploadWrapper>
-          <Input
-            accept="image/*"
-            id="icon-button-file"
-            name="icon-button-file"
-            type="file"
-          />
-          <label htmlFor="icon-button-file">
-            <IconButton component="span" color="primary">
-              <UploadTwoToneIcon />
-            </IconButton>
-          </label>
-        </ButtonUploadWrapper> */}
       </AvatarWrapper>
       <Box py={2} pl={2} mb={3}>
         <Typography gutterBottom variant="h4">
           {currentUser.firstName + ' ' + currentUser.lastName}
         </Typography>
         <Typography variant="subtitle2">I am a {currentUser.type}</Typography><br />
-        {/* <Typography sx={{ py: 2 }} variant="subtitle2" color="text.primary">
-          {user.jobtitle} | {user.location} | {user.followers} followers
-        </Typography> */}
         <Box
           display={{ xs: 'block', md: 'flex' }}
           alignItems="center"
@@ -141,14 +120,6 @@ const ProfileCover = ({ user }) => {
               View Map
             </Button>
           </Box>
-            {/* <Button
-              sx={{ mt: { xs: 2, md: 0 } }}
-              size="small"
-              variant="text"
-              endIcon={<ArrowForwardTwoToneIcon />}
-            >
-              See my profile
-            </Button> */}
         </Box>
       </Box>
     </>

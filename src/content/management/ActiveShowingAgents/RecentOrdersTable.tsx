@@ -1,15 +1,11 @@
 import { FC, ChangeEvent, useState, useRef } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
   Box,
   FormControl,
-  InputLabel,
   Card,
-  Checkbox,
   IconButton,
   Table,
   TableBody,
@@ -18,8 +14,6 @@ import {
   TablePagination,
   TableRow,
   TableContainer,
-  Select,
-  MenuItem,
   Typography,
   useTheme,
   CardHeader,
@@ -27,7 +21,7 @@ import {
   Modal
 } from '@mui/material';
 
-import { CryptoOrder, CryptoOrderStatus } from '../../../models/crypto_order';
+import { CryptoOrderStatus } from '../../../models/crypto_order';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
@@ -112,11 +106,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
   );
 
   const theme = useTheme();
-
-  const mapBounds: any = [
-    [69.5335129, -153.8220681],
-    [43.31166455, -56.44995099337655]
-  ];
 
   const [mapView, setMapView] = useState(false);
   const onMapViewHandlerClick = () => setMapView(true)
@@ -259,7 +248,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                             <Marker position={[currentPosition.lat, currentPosition.lng]}>
                               <Popup>{currentPosition.address}</Popup>
                             </Marker>
-                            {/* <Polygon positions={polygon} /> */}
                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                           </MapContainer>
                         </Box>

@@ -22,7 +22,6 @@ import {
 
 import { styled } from '@mui/material/styles';
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
-import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
@@ -65,7 +64,6 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
-  // const currentUser = useSelector(state => state.data.user)
   const dispatch: any = useDispatch();
   const navigate: any = useNavigate()
 
@@ -77,8 +75,6 @@ function HeaderUserbox() {
     avatar: '/static/images/avatars/main.jpg',
     jobtitle: 'Please sign in'
   };
-
-  
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);

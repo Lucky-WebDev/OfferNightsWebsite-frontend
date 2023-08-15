@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Button, Container, Grid, Stack, TextField, Typography } from '@mui/material';
 
 import { Link, Link as RouterLink} from 'react-router-dom';
 
@@ -6,8 +6,8 @@ import { styled } from '@mui/material/styles';
 
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
-import {useState, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useState} from 'react';
+import {useDispatch} from 'react-redux';
 
 import {signIn} from '../../../../actions/authAction';
 
@@ -57,7 +57,6 @@ function Hero() {
       return;
     }
 
-    // dispatch(signIn(user));
     console.log(user)
     dispatch(signIn(user))
   }

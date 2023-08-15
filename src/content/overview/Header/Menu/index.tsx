@@ -9,7 +9,6 @@ import {
 import { useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import Logo from '../../../../components/LogoSign';
 import {useSelector} from 'react-redux';
 import { StateType } from '../../../../reducer/dataType'
@@ -20,10 +19,6 @@ const ListWrapper = styled(Box)(
 function HeaderMenu() {
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
-
-  const handleOpen = (): void => {
-    setOpen(true);
-  };
 
   const handleClose = (): void => {
     setOpen(false);

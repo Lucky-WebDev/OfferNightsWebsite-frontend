@@ -1,7 +1,5 @@
 import {
   Avatar,
-  Tooltip,
-  IconButton,
   Box,
   Button,
   styled,
@@ -9,7 +7,6 @@ import {
   useTheme
 } from '@mui/material';
 import { useState } from 'react';
-import AttachFileTwoToneIcon from '@mui/icons-material/AttachFileTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import { useDispatch, useSelector } from 'react-redux';
 import { StateType } from '../../../reducer/dataType';
@@ -22,10 +19,6 @@ const MessageInputWrapper = styled(InputBase)(
     width: 100%;
 `
 );
-
-const Input = styled('input')({
-  display: 'none'
-});
 
 function BottomBarContent() {
   const theme = useTheme();
@@ -76,22 +69,6 @@ function BottomBarContent() {
         />
       </Box>
       <Box>
-        {/* <Tooltip arrow placement="top" title="Choose an emoji">
-          <IconButton
-            sx={{ fontSize: theme.typography.pxToRem(16) }}
-            color="primary"
-          >
-            😀
-          </IconButton>
-        </Tooltip>
-        <Input accept="image/*" id="messenger-upload-file" type="file" />
-        <Tooltip arrow placement="top" title="Attach a file">
-          <label htmlFor="messenger-upload-file">
-            <IconButton sx={{ mx: 1 }} color="primary" component="span">
-              <AttachFileTwoToneIcon fontSize="small" />
-            </IconButton>
-          </label>
-        </Tooltip> */}
         <Button startIcon={<SendTwoToneIcon />} variant="contained" onClick={onSendClick}>
           Send
         </Button>

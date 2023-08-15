@@ -1,7 +1,4 @@
 import { FC, ChangeEvent, useState } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
-import PropTypes from 'prop-types';
 import {
   Tooltip,
   Box,
@@ -17,7 +14,7 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { CryptoOrder, CryptoOrderStatus } from '../../../../../models/crypto_order';
+import { CryptoOrderStatus } from '../../../../../models/crypto_order';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { StateType } from '../../../../../reducer/dataType';
@@ -42,9 +39,6 @@ function SellerLocationTable() {
 
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  const [filters, setFilters] = useState<Filters>({
-    status: null
-  });
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user)
 
@@ -55,7 +49,6 @@ function SellerLocationTable() {
       userId: currentUser._id,
       id: id
     }
-    // e.preventDefault();
     dispatch(deleteSellerInfo(data))
   }
 
@@ -80,8 +73,6 @@ function SellerLocationTable() {
   const theme = useTheme();
 
   return (
-    // <Card>
-      // <Divider />
       <div style={{width: '100%'}}>
       <TableContainer>
         <Table>
@@ -194,22 +185,7 @@ function SellerLocationTable() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    {/* <Tooltip title="View on Map" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.primary.lighter
-                          },
-                          color: theme.palette.primary.main
-                        }}
-                        color="inherit"
-                        size="small"
-                      >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip> */}
                     <Tooltip title="Delete active showing" arrow>
-                      
                       <IconButton
                         sx={{
                           '&:hover': {

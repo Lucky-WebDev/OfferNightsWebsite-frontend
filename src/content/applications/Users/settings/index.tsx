@@ -6,15 +6,12 @@ import { Container, Tabs, Tab, Grid } from '@mui/material';
 import Footer from '../../../../components/Footer';
 import { styled } from '@mui/material/styles';
 
-import ActivityTab from './ActivityTab';
 import EditProfileTab from './EditProfileTab';
 import FarmAreaTab from './FarmAreaTab';
 import SecurityTab from './SecurityTab';
-import { useDispatch, useSelector } from 'react-redux';
-import { getActiveArea } from '../../../../actions/mapAction';
+import { useSelector } from 'react-redux';
 import { StateType } from '../../../../reducer/dataType';
 import ActiveShowingTab from './ActiveShowingTab';
-import { getMyActiveShowing } from '../../../../actions/showingAction';
 import BillingTab from './BillingTab';
 import SellerAreaTab from './SellerAreaTab';
 import BuyerAreaTab from './BuyerAreaTab';

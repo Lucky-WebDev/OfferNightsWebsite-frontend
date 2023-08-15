@@ -9,8 +9,6 @@ import {
   TextField,
   Select,
   MenuItem,
-  Modal,
-  Stack
 } from '@mui/material';
 
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
@@ -19,30 +17,15 @@ import 'leaflet/dist/leaflet.css'
 import { styled } from '@mui/material/styles';
 
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import DoNotDisturbOutlinedIcon from '@mui/icons-material/DoNotDisturbOutlined';
 import DownloadDoneOutlinedIcon from '@mui/icons-material/DownloadDoneOutlined';
-import Text from '../../../../components/Text';
-import Label from '../../../../components/Label';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType, UserType } from '../../../../reducer/dataType';
-import { useState, useRef, useMemo } from 'react';
-import {editProfile, generatePhoneToken, verifyPhone} from '../../../../actions/authAction'
+import { useState } from 'react';
+import {editProfile} from '../../../../actions/authAction'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import isEmpty from '../../../../validation/is-empty';
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '30%',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 function EditProfileTab() {
   // const navigate: any = useNavigate();
@@ -50,7 +33,6 @@ function EditProfileTab() {
 
   const currentUser: UserType = useSelector((state: StateType) => state.auth.user);
   const token: string = useSelector((state: StateType) => state.auth.token)
-  const error: any = useSelector((state: StateType) => state.auth.error);
 
   const [updatePossible, setUpdatePossible] = useState({
     personal: true,

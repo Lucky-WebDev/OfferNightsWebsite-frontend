@@ -60,11 +60,6 @@ function TopBarContent() {
               <VideoCameraFrontTwoToneIcon />
             </IconButton>
           </Tooltip>
-          {/* <Tooltip placement="bottom" title="Conversation information">
-            <IconButton color="primary" onClick={handleDrawerToggle}>
-              <InfoTwoToneIcon />
-            </IconButton>
-          </Tooltip> */}
         </Box>
       </RootWrapper>
     </>

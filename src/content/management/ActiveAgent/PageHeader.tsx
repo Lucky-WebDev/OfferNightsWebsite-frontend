@@ -1,6 +1,5 @@
 import { Typography, Button, Grid } from '@mui/material';
 
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../reducer/dataType';
 
@@ -17,15 +16,6 @@ function PageHeader() {
           {currentUser.firstName + ' ' + currentUser.lastName}, these are all agents
         </Typography>
       </Grid>
-      {/* <Grid item>
-        <Button
-          sx={{ mt: { xs: 2, md: 0 } }}
-          variant="contained"
-          startIcon={<AddTwoToneIcon fontSize="small" />}
-        >
-          Create transaction
-        </Button>
-      </Grid> */}
     </Grid>
   );
 }

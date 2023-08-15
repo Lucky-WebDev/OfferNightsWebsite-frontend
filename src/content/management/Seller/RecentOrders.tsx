@@ -14,7 +14,6 @@ function RecentOrders() {
 
   return (
     <Card>
-      {/* {allActiveShowing == null ? (<RecentOrdersTable cryptoOrders={[]} />) : (<RecentOrdersTable cryptoOrders={cryptoOrders} />)} */}
       <RecentOrdersTable cryptoOrders={cryptoOrders ?? []} />
     </Card>
   );

@@ -21,13 +21,9 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  useMap,
   Polygon,
   Popup,
-  Circle,
   useMapEvents,
-  Tooltip,
-  CircleMarker
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -36,7 +32,7 @@ import { styled } from '@mui/material/styles';
 
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import { useSelector, useDispatch } from 'react-redux';
-import { StateType, UserType } from '../../../../reducer/dataType';
+import { StateType } from '../../../../reducer/dataType';
 import { useState, useRef, lazy, Suspense, useMemo, useEffect } from 'react';
 import SuspenseLoader from '../../../../components/SuspenseLoader';
 
@@ -154,10 +150,6 @@ function FarmAreaTab() {
     code: null
   });
 
-  const [center, setCenter] = useState({
-    lat: 53.00875725,
-    lng: -102.34691034378578
-  });
   const ZOOM_LEVEL = 9;
   const mapRef = useRef();
 
@@ -387,8 +379,9 @@ function FarmAreaTab() {
         lat: address.lat,
         lng: address.lon
       });
+      positionToPlace(address.lat, address.lon);
     }
-    positionToPlace(address.lat, address.lon);
+    
   }, [address]);
 
   const onSelectChange = (newValue) => {

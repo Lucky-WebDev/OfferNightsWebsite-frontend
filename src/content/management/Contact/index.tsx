@@ -25,7 +25,6 @@ const RootWrapper = styled(Box)(
 `
 );
 
-
 const ChatWindow = styled(Box)(
   () => `
         width: 100%;

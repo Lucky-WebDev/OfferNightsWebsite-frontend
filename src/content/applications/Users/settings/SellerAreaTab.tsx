@@ -1,11 +1,7 @@
 import {
   useState,
-  MouseEvent,
-  ChangeEvent,
   useRef,
   useEffect,
-  JSXElementConstructor,
-  ReactElement
 } from 'react';
 import {
   Box,
@@ -24,10 +20,8 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
-  TextFieldProps,
   Select,
   MenuItem,
-  LinearProgress,
   Autocomplete,
   Switch
 } from '@mui/material';
@@ -36,7 +30,6 @@ import UploadTwoToneIcon from '@mui/icons-material/AddLocationAlt';
 
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import {
-  Circle,
   MapContainer,
   Marker,
   Popup,
@@ -71,18 +64,6 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '90%',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4
-};
-
-const mapStyle = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '70%',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -224,12 +205,6 @@ function SellerAreaTab() {
       ...sellerInfo,
       [e.target.name]: e.target.value
     });
-  };
-
-  const onAddLocation = (e) => {
-    e.preventDefault();
-
-    handleMapClose();
   };
 
   const onSaveActiveShowing = (e) => {
@@ -383,8 +358,9 @@ function SellerAreaTab() {
         lat: address.lat,
         lng: address.lon
       });
+      positionToPlace(address.lat, address.lon);
     }
-    positionToPlace(address.lat, address.lon);
+    
   }, [address]);
 
   const onSelectChange = (newValue) => {

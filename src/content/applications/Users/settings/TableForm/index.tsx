@@ -1,7 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import PageTitleWrapper from '../../../../../components/PageTitleWrapper';
 import { Grid, Container, Card } from '@mui/material';
-import Footer from '../../../../../components/Footer';
 
 import RecentOrdersTable from './RecentOrdersTable';
 

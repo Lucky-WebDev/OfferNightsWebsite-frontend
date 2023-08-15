@@ -11,31 +11,21 @@ import {
   MenuItem,
   Modal,
   Stack,
-  FormControl,
-  InputLabel,
-  Input
 } from '@mui/material';
 
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
-import { styled } from '@mui/material/styles';
-
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import DoNotDisturbOutlinedIcon from '@mui/icons-material/DoNotDisturbOutlined';
 import DownloadDoneOutlinedIcon from '@mui/icons-material/DownloadDoneOutlined';
 import CheckIcon from '@mui/icons-material/Check';
-import Text from '../../../../components/Text';
-import Label from '../../../../components/Label';
 import { useSelector, useDispatch } from 'react-redux';
 import { StateType, UserType } from '../../../../reducer/dataType';
 import { useState, useRef, useMemo, forwardRef } from 'react';
 import {editProfile, generatePhoneToken, verifyPhone} from '../../../../actions/authAction'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import isEmpty from '../../../../validation/is-empty';
-import { IMaskInput } from 'react-imask';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 
@@ -52,7 +42,6 @@ const style = {
 };
 
 function EditProfileTab() {
-  // const navigate: any = useNavigate();
   const dispatch: any = useDispatch();
   const currentUser: any = useSelector((state: StateType) => state.auth.user)
 
@@ -103,7 +92,6 @@ function EditProfileTab() {
 
   const onCancelClick = e => {
     e.preventDefault();
-    // navigate('/profile/details')
   }
 
 

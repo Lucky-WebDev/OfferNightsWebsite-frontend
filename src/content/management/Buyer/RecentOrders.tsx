@@ -1,6 +1,6 @@
 import { Card } from '@mui/material';
 import RecentOrdersTable from './RecentOrdersTable';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { StateType } from '../../../reducer/dataType';
 
 function RecentOrders() {

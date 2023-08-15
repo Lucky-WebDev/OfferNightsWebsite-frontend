@@ -1,4 +1,4 @@
-import { Stack, Box, Button, Container, Grid, Typography, TextField, Select, MenuItem, Checkbox } from '@mui/material';
+import { Stack, Button, Container, Grid, Typography, TextField, Select, MenuItem, Checkbox } from '@mui/material';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -8,13 +8,10 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 import { useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { alignProperty } from '@mui/material/styles/cssUtils';
 
 import {signUp} from '../../../../actions/authAction';
-import { resendVerificationCode } from '../../../../actions/authAction';
 import { checkToken } from '../../../../actions/authAction';
 
-import isEmail from '../../../../validation/is-email';
 import isEmpty from '../../../../validation/is-empty';
 import { StateType } from '../../../../reducer/dataType';
 

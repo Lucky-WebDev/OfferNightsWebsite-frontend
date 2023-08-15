@@ -8,7 +8,6 @@ import {
   MapContainer,
   useMapEvents,
   TileLayer,
-  Circle,
   Popup,
   Marker,
   Polygon
@@ -83,10 +82,6 @@ function ApplicationsTransactions() {
     [69.5335129, -153.8220681],
     [43.31166455, -56.44995099337655]
   ];
-
-  const location = [28.365724898272077, -81.55254364013672];
-  const zoom = 14;
-  const epcotCenter = [28.373711392892478, -81.54936790466309];
 
   const allAgents: any = useSelector(
     (state: StateType) => state.auth.allAgents

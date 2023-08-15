@@ -4,53 +4,28 @@ import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
-  Divider,
   Box,
-  FormControl,
-  InputLabel,
   Card,
-  Checkbox,
   IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   TableContainer,
-  Select,
-  MenuItem,
   Typography,
   useTheme,
-  CardHeader,
-  Dialog,
-  DialogTitle,
-  DialogContentText,
-  DialogActions,
-  DialogContent,
-  Button,
   Modal
 } from '@mui/material';
 
-import Label from '../../../../../components/Label';
 import { CryptoOrder, CryptoOrderStatus } from '../../../../../models/location';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-import { cryptoOrders } from '../LocationData'
 import { StateType } from '../../../../../reducer/dataType';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteActiveArea } from '../../../../../actions/mapAction';
 import { MapContainer, Marker, Polygon, TileLayer } from 'react-leaflet';
-
-const applyPagination = (
-  cryptoOrders: CryptoOrder[],
-  page: number,
-  limit: number
-): CryptoOrder[] => {
-  return cryptoOrders.slice(page * limit, page * limit + limit);
-};
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -142,7 +117,6 @@ function RecentOrdersTable() {
               [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
               [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
             ]]} />
-            {/* <Polygon positions={polygon} /> */}
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </MapContainer>
         </Box>
