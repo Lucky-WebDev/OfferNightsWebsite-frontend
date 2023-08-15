@@ -124,6 +124,38 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
 
   const mapRef = useRef();
 
+  const [currentPosition, setCurrentPosition] = useState({
+    lat: '',
+    lng: '',
+    radius: '',
+    address: ''
+  });
+
+  const [mapViewBounds, setMapViewBounds] = useState({
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: 0
+  });
+
+  const onMapView = index => {
+    setCurrentPosition({
+      lat: cryptoOrders[index].lat,
+      lng: cryptoOrders[index].lng,
+      radius: cryptoOrders[index].radius,
+      address: cryptoOrders[index].address
+    })
+
+    setMapViewBounds({
+      x1: Number(cryptoOrders[index].lat)-0.05,
+      y1: Number(cryptoOrders[index].lng)-0.05,
+      x2: Number(cryptoOrders[index].lat)+0.05,
+      y2: Number(cryptoOrders[index].lng)+0.05,
+    })
+
+    onMapViewHandlerClick()
+  }
+
   return (
     <Card>
         <CardHeader
@@ -207,20 +239,19 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                       >
                         <Box sx={style}>
                           <MapContainer
-                            bounds={mapBounds}
+                            bounds={[[mapViewBounds.x1, mapViewBounds.y1], [mapViewBounds.x2, mapViewBounds.y2]]}
                             style={{ height: '600px', width: '100%' }}
                             zoom={9}
                             ref={mapRef}
                           >
-                            <Marker position={[cryptoOrder.lat, cryptoOrder.lng]}>
-                              <Popup>{cryptoOrder.address}</Popup>
+                            <Marker position={[currentPosition.lat, currentPosition.lng]}>
+                              <Popup>{currentPosition.address}</Popup>
                             </Marker>
-                            {/* <Polygon positions={polygon} /> */}
                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                           </MapContainer>
                         </Box>
                       </Modal>
-                      <Link to={''} onClick={onMapViewHandlerClick}>
+                      <Link to={''} onClick={() => onMapView(index)}>
                       {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
                       </Link>
                     </Typography>

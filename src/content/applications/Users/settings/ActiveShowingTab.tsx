@@ -121,8 +121,8 @@ function ActiveShowingTab() {
   dispatch(getMyActiveShowing(currentUser._id));
 
   const mapBounds: any = [
-    [69.5335129, -153.8220681],
-    [43.31166455, -56.44995099337655]
+    [69.5335129, -133.8220681],
+    [47.31166455, -56.44995099337655]
   ];
   const ZOOM_LEVEL = 9;
   const mapRef = useRef();
@@ -202,8 +202,6 @@ function ActiveShowingTab() {
                 address: display_name,
                 code: place_id
               });
-
-              console.log(showingItem);
             })
             .catch((err) => console.log(err));
 
@@ -211,9 +209,6 @@ function ActiveShowingTab() {
             lat: lat,
             lng: lng
           });
-
-          setAddShow(false);
-          setProgress(false);
         } catch (error) {
           console.log('Error', error);
         }
@@ -425,6 +420,12 @@ function ActiveShowingTab() {
     // placeToPosition(newValue);
   };
 
+  const [checked, setChecked] = useState(false)
+
+  const handleChange = e => {
+    setChecked(e.target.checked);
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -521,11 +522,6 @@ function ActiveShowingTab() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button fullWidth variant="contained">
-                    Search
-                  </Button>
-                </Grid>
-                <Grid item xs={12}>
                   <Divider orientation="horizontal" />
                 </Grid>
 
@@ -533,7 +529,7 @@ function ActiveShowingTab() {
                 <Grid item xs={12} container>
                   <Grid item xs={12}>
                     <TextField
-                      label="Listing"
+                      label="Listing Number"
                       name="listing"
                       value={showingItem.listing}
                       onChange={onChange}
@@ -550,11 +546,12 @@ function ActiveShowingTab() {
                       value={showingItem.offerDate}
                       onChange={onChange}
                       variant="outlined"
+                      disabled={!checked}
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} sm={2} md={2}>
-                    <Switch />
+                  <Grid item xs={12} sm={2} md={2} pl={2} pt={1}>
+                    <Switch checked={checked} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} />
                   </Grid>
                 </Grid>
                 <Grid item xs={12} container>
@@ -657,21 +654,13 @@ function ActiveShowingTab() {
                   zoom={ZOOM_LEVEL}
                   ref={mapRef}
                 >
-                  {progress ? (
-                    <LoadingSpinner loading={progress} />
-                  ) : (
                     <>
                       <MapClickHandler />
-                      <Marker position={[address.lat ?? 0, address.lon ?? 0]}>
+                      <Marker position={position}>
                         <Popup>{showingItem.address}</Popup>
                       </Marker>
-                      {/* <Circle
-                        center={position}
-                        pathOptions={{ color: 'red' }}
-                      /> */}
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     </>
-                  )}
                 </MapContainer>
               </Grid>
             </Grid>

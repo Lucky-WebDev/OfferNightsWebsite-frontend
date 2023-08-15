@@ -158,8 +158,8 @@ function BuyerAreaTab() {
     suburb: null,
     address: null,
     code: null,
-    lat: '0',
-    lng: '0'
+    lat: null,
+    lng: null
   });
 
   const [addShow, setAddShow] = useState(true);
@@ -287,6 +287,8 @@ function BuyerAreaTab() {
       quarter: buyerInfo.quarter,
       village: buyerInfo.village,
       road: buyerInfo.road,
+      highway: buyerInfo.highway,
+      suburb: buyerInfo.suburb,
       houseNumber: buyerInfo.houseNumber,
       address: buyerInfo.address,
       code: buyerInfo.code,
@@ -342,6 +344,8 @@ function BuyerAreaTab() {
             quarter: data.address.quarter,
             village: data.address.village,
             road: data.address.road,
+            highway: data.address.highway,
+            suburb: data.address.suburb,
             houseNumber: data.address.houseNumber,
             lat: lat,
             lng: lng,
@@ -415,7 +419,6 @@ function BuyerAreaTab() {
   }, [debouncedInput]);
 
   useEffect(() => {
-    console.log({ address });
     if (address) {
       setPosition({
         lat: address.lat,
@@ -423,8 +426,6 @@ function BuyerAreaTab() {
       });
       positionToPlace(address.lat, address.lon);
     }
-
-    
   }, [address]);
 
   const onSelectChange = (newValue) => {

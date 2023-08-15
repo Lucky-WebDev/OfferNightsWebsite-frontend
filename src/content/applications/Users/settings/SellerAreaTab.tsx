@@ -55,6 +55,7 @@ import {
   getMySellerLocation
 } from '../../../../actions/sellerAction';
 import SellerLocationTable from './TableForm/SellerLocationTable';
+import useDebounce from '../../../../hook/useDebounce';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -119,8 +120,8 @@ function SellerAreaTab() {
   dispatch(getMySellerLocation(currentUser._id));
 
   const mapBounds: any = [
-    [69.5335129, -153.8220681],
-    [43.31166455, -56.44995099337655]
+    [69.5335129, -133.8220681],
+    [47.31166455, -56.44995099337655]
   ];
   const ZOOM_LEVEL = 9;
   const mapRef = useRef();
@@ -278,7 +279,6 @@ function SellerAreaTab() {
     dispatch(addSellerLocation(sellerRequest));
   };
 
-  const [inputValue, setInputValue] = useState('');
   const [address, setAddress] = useState<AddressType>({
     lat: '',
     lon: '',
@@ -286,20 +286,66 @@ function SellerAreaTab() {
   });
   const [options, setOptions] = useState([]);
 
-  const placeToPosition = async (street, city, county, state, code) => {
+  const positionToPlace = async (lat, lng) => {
     try {
       let url =
-        'https://nominatim.openstreetmap.org/search?format=json&street=' +
-        street +
-        '&city=' +
-        city +
-        '&county=' +
-        county +
-        '&state=' +
-        state +
-        '&country=canada' +
-        '&postalcode=' +
-        code;
+        'https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+        '&lat=' +
+        lat +
+        '&lon=' +
+        lng;
+
+      await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+        // headers: {
+        //   "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+        // }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const display_name = data.display_name;
+          const place_id = data.address.postcode;
+
+          setSellerInfo({
+            ...sellerInfo,
+            country: data.address.country,
+            state: data.address.state,
+            city: data.address.city,
+            county: data.address.county,
+            region: data.address.region,
+            quarter: data.address.quarter,
+            village: data.address.village,
+            road: data.address.road,
+            highway: data.address.highway,
+            suburb: data.address.suburb,
+            houseNumber: data.address.houseNumber,
+            lat: lat,
+            lng: lng,
+            address: display_name,
+            code: place_id
+          });
+        })
+        .catch((err) => console.log(err));
+
+      setPosition({
+        lat: lat,
+        lng: lng
+      });
+
+      setAddShow(false);
+      setProgress(false);
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  const placeToPosition = async (place) => {
+    try {
+      let url =
+        'https://nominatim.openstreetmap.org/search?format=json&q=' +
+        place +
+        '&limit=20';
 
       await fetch(url, {
         method: 'GET',
@@ -321,9 +367,14 @@ function SellerAreaTab() {
     }
   };
 
-  // useEffect(() => {
-  //   placeToPosition(inputValue);
-  // }, [inputValue]);
+  const [inputValue, setInputValue] = useState('');
+  const debouncedInput: string = useDebounce<string>(inputValue, 2000);
+
+  useEffect(() => {
+    if (debouncedInput) {
+      placeToPosition(debouncedInput);
+    }
+  }, [debouncedInput]);
 
   useEffect(() => {
     console.log({ address });
@@ -333,13 +384,12 @@ function SellerAreaTab() {
         lng: address.lon
       });
     }
+    positionToPlace(address.lat, address.lon);
   }, [address]);
 
-  // const onSelectChange = (newValue) => {
-  //   setAddress(newValue);
-
-  //   placeToPosition(inputValue);
-  // };
+  const onSelectChange = (newValue) => {
+    setAddress(newValue);
+  };
 
   const [place, setPlace] = useState({
     street: '',
@@ -356,17 +406,6 @@ function SellerAreaTab() {
     });
   };
 
-  const onPlaceSearch = (e) => {
-    e.preventDefault();
-    placeToPosition(
-      place.street,
-      place.city,
-      place.county,
-      place.state,
-      place.code
-    );
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -379,16 +418,34 @@ function SellerAreaTab() {
           <Box sx={style}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={4} spacing={1} container>
+                <Grid item xs={12} sm={12} md={12}>
+                  <Autocomplete
+                    value={address}
+                    onChange={(event: any, newValue: string | null) => {
+                      onSelectChange(newValue);
+                    }}
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => {
+                      setInputValue(newInputValue);
+                    }}
+                    id="controllable-states-demo"
+                    options={options}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Address" />
+                    )}
+                  />
+                </Grid>
                 <Grid item xs={12}>
                   <Grid item xs={12} sm={12} md={12}>
                     <TextField
                       label="House Name | Street"
                       required
                       name="street"
-                      value={place.street}
+                      value={sellerInfo.houseNumber ?? '' + sellerInfo.road ?? '' + sellerInfo.highway ?? '' + sellerInfo.suburb ?? ''}
                       onChange={onPlaceChange}
                       variant="outlined"
                       fullWidth
+                      disabled
                     />
                   </Grid>
                 </Grid>
@@ -398,10 +455,11 @@ function SellerAreaTab() {
                       label="City"
                       required
                       name="city"
-                      value={place.city}
+                      value={sellerInfo.city ?? ''}
                       onChange={onPlaceChange}
                       variant="outlined"
                       fullWidth
+                      disabled
                     />
                   </Grid>
                 </Grid>
@@ -411,57 +469,40 @@ function SellerAreaTab() {
                       label="County"
                       required
                       name="county"
-                      value={place.county}
+                      value={sellerInfo.county ?? ''}
                       onChange={onPlaceChange}
                       variant="outlined"
                       fullWidth
+                      disabled
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={12} sm={4} md={4}>
+                <Grid item xs={12} sm={6} md={6}>
                   <TextField
                     label="State"
                     required
                     name="state"
-                    value={place.state}
+                    value={sellerInfo.state ?? ''}
                     onChange={onPlaceChange}
                     variant="outlined"
                     fullWidth
+                    disabled
                   />
                 </Grid>
-                <Grid item xs={12} sm={4} md={4}>
+                <Grid item xs={12} sm={6} md={6}>
                   <TextField
                     label="Postal Code"
                     required
                     name="code"
-                    value={place.code}
+                    value={sellerInfo.code ?? ''}
                     onChange={onPlaceChange}
                     variant="outlined"
                     fullWidth
+                    disabled
                   />
-                </Grid>
-                <Grid item xs={12} sm={4} md={4}>
-                  <Button
-                    onClick={onPlaceSearch}
-                    fullWidth
-                    variant="contained"
-                    style={{ height: '100%' }}
-                  >
-                    Search
-                  </Button>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider orientation="horizontal" />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12}>
-                  <TextField
-                    required
-                    name="address"
-                    value={sellerInfo.address}
-                    onChange={onPlaceChange}
-                    variant="outlined"
-                    fullWidth
-                  />
                 </Grid>
                 <Grid item xs={12} container>
                   <Grid item xs={12} sm={6} md={6}>
@@ -589,8 +630,8 @@ function SellerAreaTab() {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={sellerInfo.typeProperty}
-                      name="typeProperty"
+                      value={sellerInfo.realtorContact}
+                      name="realtorContact"
                       label="*Can a realtor contact you if they have a buyer for your unit?"
                       onChange={onChange}
                       defaultValue={'Yes'}

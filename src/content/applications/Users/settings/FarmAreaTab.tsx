@@ -170,8 +170,8 @@ function FarmAreaTab() {
           //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
           // );
           if(myActiveArea.length >= 4) {
-            handleClose();
             enqueueSnackbar('You can not any farming area anymore.')
+            // handleClose();
             return;
           }
 
@@ -213,11 +213,11 @@ function FarmAreaTab() {
                 address: display_name,
                 code: place_id
               });
+
+              setAddShow(false)
             })
             .catch((err) => console.log(err));
           
-          setAddShow(false);
-
           setPosition({
             lat: lat,
             lng: lng
