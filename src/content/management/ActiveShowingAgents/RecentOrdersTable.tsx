@@ -220,7 +220,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
+                      {cryptoOrder.city ?? ''} 
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -253,7 +253,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders = [] }) =>
                         </Box>
                       </Modal>
                       <Link to={''} onClick={() => onMapView(index)}>
-                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
+                      {cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''} {cryptoOrder.road ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.county ?? ''}
                       </Link>
                     </Typography>
                   </TableCell>

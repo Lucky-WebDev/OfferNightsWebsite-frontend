@@ -115,7 +115,7 @@ function SellerLocationTable() {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
+                      {cryptoOrder.city ?? ''} 
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -126,7 +126,7 @@ function SellerLocationTable() {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''} {cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
+                      {cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''} {cryptoOrder.road ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.county ?? ''}
                     </Typography>
                   </TableCell>
                   <TableCell>

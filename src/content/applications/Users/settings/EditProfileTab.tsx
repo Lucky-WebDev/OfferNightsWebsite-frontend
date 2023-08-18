@@ -63,6 +63,7 @@ function EditProfileTab() {
 
   const [updateProfile, setUpdateProfile] = useState({
     type: profile.type,
+    cell: profile.cell,
     firstName: profile.firstName,
     middleName: profile.middleName,
     lastName: profile.lastName,
@@ -279,6 +280,14 @@ function EditProfileTab() {
                     <MenuItem value={'buyer'}>Buyer</MenuItem>
                     <MenuItem value={'seller'}>Seller</MenuItem>
                   </Select>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pt={1.5}>
+                    *Cell Phone:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <TextField name="cell" disabled={true} value={updateProfile.cell} onChange={onChange} variant="outlined" />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>

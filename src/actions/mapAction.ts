@@ -2,7 +2,8 @@ import axios from 'axios';
 import setAuthToken from '../api/setAuthToken';
 import { enqueueSnackbar } from 'notistack';
 
-const API_BASE: string = 'http://192.168.136.185:5000/map';
+const url = process.env.REACT_APP_URL;
+const API_BASE: string = `http://${url}/map`;
 
 export const addLocation = (id: string, data: any) => (dispatch) => {
   axios

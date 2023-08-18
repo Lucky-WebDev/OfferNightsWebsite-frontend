@@ -154,7 +154,6 @@ function ActiveShowingTable() {
               <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Price</TableCell>
               <TableCell align="right">Offer Date</TableCell>
-              <TableCell align="right">Create Date</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -184,7 +183,7 @@ function ActiveShowingTable() {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.state ?? ''} {cryptoOrder.city ?? ''} 
+                      {cryptoOrder.city ?? ''} 
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -195,7 +194,7 @@ function ActiveShowingTable() {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.county ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.road ?? ''}{cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''}
+                      {cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''} {cryptoOrder.road ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.county ?? ''}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -240,17 +239,6 @@ function ActiveShowingTable() {
                       noWrap
                     >
                       {cryptoOrder.offerDate}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.createdDate}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">

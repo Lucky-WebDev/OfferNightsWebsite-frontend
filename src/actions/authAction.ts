@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../reducer/dataType';
 import { enqueueSnackbar } from 'notistack';
 
-const API_BASE: string = 'http://192.168.136.185:5000/user';
-const API_VERIFY: string = 'http://192.168.136.185:5000/verify';
+const url = process.env.REACT_APP_URL;
+const API_BASE: string = `http://${url}/user`;
+const API_VERIFY: string = `http://${url}/verify`;
 
 export const signUp = (data: any) => (dispatch) => {
   dispatch({
@@ -20,6 +21,9 @@ export const signUp = (data: any) => (dispatch) => {
   axios
     .post(`${API_VERIFY}/email-verify`, verifyEmail)
     .then(res => {
+      if(res.data.data.double == true) {
+        enqueueSnackbar('Email is already verified.')
+      }
       console.log('Successfully token generate!')
     })
     .catch(err => {
@@ -44,7 +48,7 @@ export const checkToken = (data: any) => async dispatch => {
       token: data.token,
       email: data.email
     }
-    const res = await axios.get(`${API_VERIFY}/check-token/${data.email}${data.token}`);
+    const res = await axios.post(`${API_VERIFY}/check-token`, token);
 
     if(res.data.data.flag == true) {
       console.log(data)

@@ -2,7 +2,8 @@ import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import { Types } from './types';
 
-const API_BASE: string = 'http://192.168.136.185:5000/seller';
+const url = process.env.REACT_APP_URL;
+const API_BASE: string = `http://${url}/seller`;
 
 export const addSellerLocation = (data: any) => (dispatch) => {
   axios

@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import L from 'leaflet';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import {
@@ -43,6 +44,7 @@ import useDebounce from '../../../../hook/useDebounce';
 
 import {
   addActiveShowing,
+  doubleCheck,
   getMyActiveShowing
 } from '../../../../actions/showingAction';
 import ActiveShowingTable from './TableForm/ActiveShowingTable';
@@ -84,31 +86,7 @@ function ActiveShowingTab() {
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const handleClickOpenConfirm = () => {
-    setOpenConfirm(true);
-  };
-
-  const handleCloseConfirm = () => {
-    setOpenConfirm(false);
-  };
-
-  const dispatch: any = useDispatch();
-
-  const currentUser: any = useSelector((state: StateType) => state.auth.user);
-
-  dispatch(getMyActiveShowing(currentUser._id));
-
-  const mapBounds: any = [
-    [69.5335129, -133.8220681],
-    [47.31166455, -56.44995099337655]
-  ];
-  const ZOOM_LEVEL = 9;
-  const mapRef = useRef();
-
-  const [position, setPosition] = useState({
-    lat: '',
-    lng: ''
-  });
+  const [checkListingFlag, setCheckListingFlag] = useState(false)
 
   const [showingItem, setShowingItem] = useState({
     offerDate: null,
@@ -131,6 +109,70 @@ function ActiveShowingTab() {
     road: null,
     houseNumber: null,
     listingAgent: null
+  });
+
+  const [options, setOptions] = useState([]);
+
+  const handleClickOpenConfirm = async () => {
+    console.log(options)
+
+    if (isEmpty(showingItem.listing)) {
+      enqueueSnackbar('Please input listing.');
+      return;
+    }
+    if (isEmpty(showingItem.address)) {
+      enqueueSnackbar('Please select or fill the current address.');
+      return;
+    }
+    if (isEmpty(showingItem.price)) {
+      enqueueSnackbar('Please fill the Price.');
+      return;
+    }
+    if (isEmpty(showingItem.lat)) {
+      enqueueSnackbar('Please select the Latitude.');
+      return;
+    }
+    if (isEmpty(showingItem.lng)) {
+      enqueueSnackbar('Please select the Longitude.');
+      return;
+    }
+    if (isEmpty(showingItem.listingAgent)) {
+      enqueueSnackbar(
+        "Please answer the question for 'Are you listing agent?'."
+      );
+      return;
+    }
+
+    const flag = await doubleCheck({listing: showingItem.listing})
+    if(flag) {
+      setOpenConfirm(true);
+    } else {
+      enqueueSnackbar('Listing Double');
+      setCheckListingFlag(false)
+      return
+    }
+  };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  };
+
+  const dispatch: any = useDispatch();
+
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+
+  dispatch(getMyActiveShowing(currentUser._id));
+
+  const mapBounds: any = [
+    [69.5335129, -133.8220681],
+    [47.31166455, -56.44995099337655]
+  ];
+  const ZOOM_LEVEL = 9;
+  const mapRef = useRef();
+
+  const [position, setPosition] = useState({
+    lat: '',
+    lng: ''
   });
 
   const [addShow, setAddShow] = useState(true);
@@ -258,38 +300,12 @@ function ActiveShowingTab() {
     });
   };
 
+
   const onSaveActiveShowing = (e) => {
     e.preventDefault();
 
     handleCloseConfirm();
     handleMapClose();
-
-    if (isEmpty(showingItem.listing)) {
-      enqueueSnackbar('Please input listing.');
-      return;
-    }
-    if (isEmpty(showingItem.address)) {
-      enqueueSnackbar('Please select or fill the current address.');
-      return;
-    }
-    if (isEmpty(showingItem.price)) {
-      enqueueSnackbar('Please fill the Price.');
-      return;
-    }
-    if (isEmpty(showingItem.lat)) {
-      enqueueSnackbar('Please select the Latitude.');
-      return;
-    }
-    if (isEmpty(showingItem.lng)) {
-      enqueueSnackbar('Please select the Longitude.');
-      return;
-    }
-    if (isEmpty(showingItem.listingAgent)) {
-      enqueueSnackbar(
-        "Please answer the question for 'Are you listing agent?'."
-      );
-      return;
-    }
 
     const activeShowing = {
       userId: currentUser._id,
@@ -316,7 +332,10 @@ function ActiveShowingTab() {
       listingAgent: showingItem.listingAgent
     };
 
+    
+
     handleClose();
+
     dispatch(addActiveShowing(activeShowing));
   };
 
@@ -334,12 +353,11 @@ function ActiveShowingTab() {
     label: ''
   });
 
-  const [options, setOptions] = useState([]);
 
   const placeToPosition = async (place) => {
     try {
       let url =
-        'https://nominatim.openstreetmap.org/search?format=json&q=' +
+        'https://nominatim.openstreetmap.org/search?format=jsonv2&q=' +
         place +
         '&limit=20';
 
@@ -352,10 +370,15 @@ function ActiveShowingTab() {
       })
         .then((response) => response.json())
         .then((data: any) => {
-          const options = data.map((item: any) => {
-            return { ...item, label: item.display_name };
+          console.log(data)
+          const items = data.map((item: any) => {
+            return {
+              ...item,
+              label: item.display_name 
+            };
           });
-          setOptions(options);
+          console.log(items)
+          setOptions(items);
         })
         .catch((err) => console.log(err));
     } catch (error) {
@@ -375,8 +398,6 @@ function ActiveShowingTab() {
 
   useEffect(() => {
     if (debouncedInput) {
-      placeToPosition(debouncedInput);
-    } else {
       placeToPosition(debouncedInput);
     }
   }, [debouncedInput]);
@@ -404,6 +425,8 @@ function ActiveShowingTab() {
     setChecked(e.target.checked);
   };
 
+  const [listingValue, setListingValue] = useState('');
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -426,7 +449,7 @@ function ActiveShowingTab() {
                     onInputChange={(event, newInputValue) => {
                       setInputValue(newInputValue);
                     }}
-                    id="controllable-states-demo"
+                    // id="controllable-states-demo"
                     options={options}
                     renderInput={(params) => (
                       <TextField {...params} label="Address" />

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 
-const API_BASE: string = 'http://192.168.136.185:5000/contact';
+const url = process.env.REACT_APP_URL;
+const API_BASE: string = `http://${url}/contact`;
 
 export const sendMessage = (data: any) => (dispatch) => {
     axios
