@@ -24,9 +24,7 @@ function App() {
   const navigate: any = useNavigate()
   
   useEffect(() => {
-    // check for token in LS when app first runs
     if (localStorage.token) {
-      // if there is a token set axios headers for all requests
       setAuthToken(localStorage.token);
     } else {
       navigate('/')
