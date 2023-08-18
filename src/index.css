@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "GoldmanBold";
+  src: local("GoldmanBold"),
+   url("./fonts/Kollektif.ttf") format("truetype");
+  font-weight: bold;
+}
+
+.container {
+  font-weight: bold;
+}
