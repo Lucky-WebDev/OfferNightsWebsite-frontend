@@ -17,7 +17,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import 'leaflet/dist/leaflet.css'
 import { SnackbarProvider } from 'notistack';
-
 import './App.css'
 
 function App() {
@@ -25,9 +24,7 @@ function App() {
   const navigate: any = useNavigate()
   
   useEffect(() => {
-    // check for token in LS when app first runs
     if (localStorage.token) {
-      // if there is a token set axios headers for all requests
       setAuthToken(localStorage.token);
     } else {
       navigate('/')
