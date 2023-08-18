@@ -17,7 +17,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import 'leaflet/dist/leaflet.css'
 import { SnackbarProvider } from 'notistack';
-
 import './App.css'
 
 function App() {
