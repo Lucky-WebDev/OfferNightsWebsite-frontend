@@ -98,7 +98,10 @@ function SellerAreaTab() {
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
   const dispatch: any = useDispatch();
-  dispatch(getMySellerLocation(currentUser._id));
+
+  useEffect(() => {
+    dispatch(getMySellerLocation(currentUser._id));
+  }, [])
 
   const mapBounds: any = [
     [69.5335129, -133.8220681],

@@ -97,7 +97,9 @@ function BuyerAreaTab() {
 
   const dispatch: any = useDispatch();
 
-  dispatch(getMyBuyerLocation(currentUser._id));
+  useEffect(() => {
+    dispatch(getMyBuyerLocation(currentUser._id));
+  }, [])
 
   const mapBounds: any = [
     [69.5335129, -133.8220681],

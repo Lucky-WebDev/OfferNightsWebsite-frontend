@@ -161,7 +161,9 @@ function ActiveShowingTab() {
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
-  dispatch(getMyActiveShowing(currentUser._id));
+  useEffect(() => {
+    dispatch(getMyActiveShowing(currentUser._id));
+  }, [])
 
   const mapBounds: any = [
     [69.5335129, -133.8220681],

@@ -116,8 +116,15 @@ function FarmAreaTab() {
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
+  const myActiveArea: any = useSelector((state: StateType) => state.auth.activeArea);
+
   const handleClickOpenConfirm = () => {
-    setOpenConfirm(true);
+    if(myActiveArea.length < 4) {
+      setOpenConfirm(true);
+    } else {
+      enqueueSnackbar('You can not select more than 4 active areas')
+    }
   };
 
   const handleCloseConfirm = () => {
@@ -127,10 +134,6 @@ function FarmAreaTab() {
   useEffect(() => {
     dispatch(getActiveArea(currentUser._id));
   }, [])
-
-  const currentUser: any = useSelector((state: StateType) => state.auth.user);
-  const myActiveArea: any = useSelector((state: StateType) => state.auth.activeArea);
-
 
   const [mapInfo, setMapInfo] = useState({
     country: null,

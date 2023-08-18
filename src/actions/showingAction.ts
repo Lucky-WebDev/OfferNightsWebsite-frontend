@@ -8,7 +8,7 @@ export const addActiveShowing = (data: any) => (dispatch) => {
   axios
     .post(`${API_BASE}/add-active-showing`, data)
     .then((res) => {
-      enqueueSnackbar('ADD_ACTIVE_SHOWING');
+      enqueueSnackbar('New active agent showing is added successfully.');
       dispatch({
         type: 'GET_ACTIVE_SHOWING',
         payload: res.data.data
