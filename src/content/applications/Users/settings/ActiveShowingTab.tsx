@@ -332,8 +332,6 @@ function ActiveShowingTab() {
       listingAgent: showingItem.listingAgent
     };
 
-    
-
     handleClose();
 
     dispatch(addActiveShowing(activeShowing));
