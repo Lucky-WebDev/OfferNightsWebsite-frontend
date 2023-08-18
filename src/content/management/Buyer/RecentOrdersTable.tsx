@@ -188,7 +188,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               <TableCell>No</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>City</TableCell>
-              <TableCell>Place</TableCell>
+              <TableCell>Street Address</TableCell>
               <TableCell align="right">Realtor?</TableCell>
               <TableCell align="right">With a realtor?</TableCell>
               <TableCell align="right">Approved mortage?</TableCell>

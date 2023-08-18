@@ -127,7 +127,7 @@ function RecentOrdersTable() {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>City</TableCell>
-              <TableCell>Place</TableCell>
+              <TableCell>Street Address</TableCell>
               <TableCell>Postal Code</TableCell>
               <TableCell>Radius</TableCell>
               <TableCell align="right">Actions</TableCell>

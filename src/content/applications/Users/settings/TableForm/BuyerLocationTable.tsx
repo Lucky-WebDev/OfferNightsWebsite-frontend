@@ -81,7 +81,7 @@ function BuyerLocationTable() {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>City</TableCell>
-              <TableCell>Place</TableCell>
+              <TableCell>Street Address</TableCell>
               <TableCell>Realtor?</TableCell>
               <TableCell>With a realtor?</TableCell>
               <TableCell align="right">Type of house</TableCell>

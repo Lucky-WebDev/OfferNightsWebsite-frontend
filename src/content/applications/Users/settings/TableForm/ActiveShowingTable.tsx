@@ -149,7 +149,7 @@ function ActiveShowingTable() {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>City</TableCell>
-              <TableCell>Place</TableCell>
+              <TableCell>Street Address</TableCell>
               <TableCell>Postal Code</TableCell>
               <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Price</TableCell>

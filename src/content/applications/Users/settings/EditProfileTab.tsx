@@ -181,6 +181,11 @@ function EditProfileTab() {
           <CardContent sx={{ p: 4 }}>
             <Typography variant="subtitle2">
               <Grid container spacing={1}>
+                <Grid xs={12}>
+                  <Typography variant="subtitle2">
+                    You must verify your phone number and you can visit our website.
+                  </Typography>
+                </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pt={1.5}>
                     *Cell Phone:
