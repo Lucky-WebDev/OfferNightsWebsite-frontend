@@ -62,7 +62,7 @@ function Sidebar() {
                 width: 52
               }}
             >
-              <Logo />
+              {/* <Logo /> */}
             </Box>
           </Box>
           <Divider
@@ -119,7 +119,7 @@ function Sidebar() {
                   width: 52
                 }}
               >
-                <Logo />
+                {/* <Logo /> */}
               </Box>
             </Box>
             <Divider

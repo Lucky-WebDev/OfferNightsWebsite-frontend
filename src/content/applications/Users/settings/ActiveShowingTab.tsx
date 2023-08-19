@@ -540,6 +540,16 @@ function ActiveShowingTab() {
                   </Grid>
                 </Grid>
                 <Grid item xs={12} container>
+                  <Grid item xs={12}>
+                    <Typography
+                      id="modal-modal-title"
+                      variant="h6"
+                      component="h2"
+                      mt={2}
+                    >
+                      Offering Date
+                    </Typography>
+                  </Grid>
                   <Grid item xs={12} sm={10} md={10}>
                     <TextField
                       name="offerDate"
