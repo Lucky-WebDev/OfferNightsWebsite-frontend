@@ -11,6 +11,8 @@ import {
   
 } from '@mui/material';
 
+import logo from '../../img/icon-192x192.png'
+
 import { Link } from 'react-router-dom';
 
 const LogoWrapper = styled(Link)(
@@ -26,8 +28,8 @@ const LogoWrapper = styled(Link)(
 
 const LogoSignWrapper = styled(Box)(
   () => `
-        width: 52px;
-        height: 38px;
+        width: 370px;
+        height: 100%;
 `
 );
 
@@ -112,7 +114,7 @@ function Logo() {
             '.MuiBadge-badge': {
               fontSize: theme.typography.pxToRem(11),
               right: -2,
-              top: 8
+              top: 8,
             }
           }}
           overlap="circular"
@@ -123,7 +125,7 @@ function Logo() {
             {/* <LogoSign>
               <LogoSignInner />
             </LogoSign> */}
-            <img src='../../img/icon-192x192.png' width={150} height={40} />
+            <img src={logo} width={'100%'} />
           </LogoSignWrapper>
         </Badge>
       </LogoWrapper>

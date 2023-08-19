@@ -32,7 +32,7 @@ function HeaderMenu() {
       <ListWrapper>
         <List disablePadding component={Box} display="flex">
           <Logo />
-          <span style={{paddingLeft: '100px'}}></span>
+          <span style={{paddingLeft: '350px'}}></span>
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
             button
