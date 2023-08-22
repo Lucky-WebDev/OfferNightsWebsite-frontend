@@ -530,7 +530,7 @@ function ActiveShowingTab() {
                 <Grid item xs={12} container>
                   <Grid item xs={12}>
                     <TextField
-                      label="Listing Number"
+                      label="Listing#"
                       name="listing"
                       value={showingItem.listing}
                       onChange={onChange}
@@ -568,7 +568,7 @@ function ActiveShowingTab() {
                 <Grid item xs={12} container>
                   <Grid item xs={12} sm={12} md={12}>
                     <TextField
-                      label="Unit"
+                      label="Unit#"
                       name="unit"
                       value={showingItem.unit}
                       onChange={onChange}

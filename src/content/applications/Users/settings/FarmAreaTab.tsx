@@ -156,6 +156,11 @@ function FarmAreaTab() {
   const ZOOM_LEVEL = 9;
   const mapRef = useRef();
 
+  const [mapBounds, setMapBounds] = useState([
+    [69.5335129, -153.8220681],
+    [43.31166455, -56.44995099337655]
+  ])
+
   const MapClickHandler = () => {
     let map = useMapEvents({
       click: async (e) => {
@@ -186,6 +191,11 @@ function FarmAreaTab() {
           })
             .then((response) => response.json())
             .then((data) => {
+              setMapBounds([
+                [lat-10, lng-10],
+                [lat+10, lng+10]
+              ])
+              
               console.log(data);
               const display_name = data.display_name;
               const place_id = data.address.postcode;
@@ -212,6 +222,8 @@ function FarmAreaTab() {
               setAddShow(false)
             })
             .catch((err) => console.log(err));
+      
+          
           
           setPosition({
             lat: lat,
@@ -272,13 +284,6 @@ function FarmAreaTab() {
     coverImg: '/static/images/background/map.png',
     avatar: '/static/images/avatars/main.jpg'
   };
-
-  const mapBounds: any = [
-    [69.5335129, -153.8220681],
-    [43.31166455, -56.44995099337655]
-  ];
-
-  
 
   const [inputValue, setInputValue] = useState('');
   const [address, setAddress] = useState<AddressType>({

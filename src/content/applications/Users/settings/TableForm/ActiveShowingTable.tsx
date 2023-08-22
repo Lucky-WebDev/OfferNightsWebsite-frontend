@@ -151,7 +151,7 @@ function ActiveShowingTable() {
               <TableCell>City</TableCell>
               <TableCell>Street Address</TableCell>
               <TableCell>Postal Code</TableCell>
-              <TableCell align="right">Unit</TableCell>
+              <TableCell align="right">Unit#</TableCell>
               <TableCell align="right">Price</TableCell>
               <TableCell align="right">Offer Date</TableCell>
               <TableCell align="right">Actions</TableCell>
