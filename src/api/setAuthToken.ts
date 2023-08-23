@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {useDispatch} from 'react-redux'
 
 // store our JWT in LS and set axios headers if we do have a token
 

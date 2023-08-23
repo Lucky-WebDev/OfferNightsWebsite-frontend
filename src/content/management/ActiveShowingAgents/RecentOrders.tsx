@@ -1,17 +1,19 @@
 import { Card } from '@mui/material';
-import { CryptoOrder } from '../../../models/crypto_order';
+import { DataFilter } from '../../../models/data_filter';
 import RecentOrdersTable from './RecentOrdersTable';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../reducer/dataType';
 
 function RecentOrders() {
-  const allActiveShowing: any = useSelector((state: StateType) => state.auth.allActiveShowing);
-  
-  const cryptoOrders: CryptoOrder[] = allActiveShowing
+  const allActiveShowing: any = useSelector(
+    (state: StateType) => state.auth.allActiveShowing
+  );
+
+  const tableItems: DataFilter[] = allActiveShowing;
 
   return (
     <Card>
-      <RecentOrdersTable cryptoOrders={cryptoOrders ?? []} />
+      <RecentOrdersTable tableItems={tableItems ?? []} />
     </Card>
   );
 }

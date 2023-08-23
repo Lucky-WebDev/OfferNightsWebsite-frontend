@@ -21,7 +21,7 @@ import {
   Modal
 } from '@mui/material';
 
-import { CryptoOrderStatus } from '../../../models/crypto_order';
+import { ItemStatus } from '../../../models/data_filter';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
@@ -40,11 +40,11 @@ L.Icon.Default.mergeOptions({
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: any;
+  tableItems: any;
 }
 
 interface Filters {
-  status?: CryptoOrderStatus;
+  status?: ItemStatus;
 }
 
 const style = {
@@ -59,29 +59,22 @@ const style = {
   p: 4
 };
 
-const applyFilters = (
-  cryptoOrders: any,
-  filters: Filters
-): any => {
-  return cryptoOrders.filter((cryptoOrder) => {
+const applyFilters = (tableItems: any, filters: Filters): any => {
+  return tableItems.filter((tableItem) => {
     let matches = true;
 
-    if (filters.status && cryptoOrder.status !== filters.status) {
+    if (filters.status && tableItem.status !== filters.status) {
       matches = false;
     }
     return matches;
   });
 };
 
-const applyPagination = (
-  cryptoOrders: any,
-  page: number,
-  limit: number
-): any => {
-  return cryptoOrders && cryptoOrders.slice(page * limit, page * limit + limit);
+const applyPagination = (tableItems: any, page: number, limit: number): any => {
+  return tableItems && tableItems.slice(page * limit, page * limit + limit);
 };
 
-const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
+const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ tableItems }) => {
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [filters, setFilters] = useState<Filters>({
@@ -96,18 +89,14 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredCryptoOrders = applyFilters(cryptoOrders, filters);
-  const paginatedCryptoOrders = applyPagination(
-    filteredCryptoOrders,
-    page,
-    limit
-  );
+  const filteredTableItems = applyFilters(tableItems, filters);
+  const paginatedTableData = applyPagination(filteredTableItems, page, limit);
 
   const theme = useTheme();
 
   const [mapView, setMapView] = useState(false);
-  const onMapViewHandlerClick = () => setMapView(true)
-  const onMapViewHandlerClose = () => setMapView(false)
+  const onMapViewHandlerClick = () => setMapView(true);
+  const onMapViewHandlerClose = () => setMapView(false);
 
   const mapRef = useRef();
 
@@ -121,33 +110,38 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     x1: 0,
     y1: 0,
     x2: 0,
-    y2: 0,
+    y2: 0
   });
 
-  const onMapView = index => {
+  const onMapView = (index) => {
     setCurrentPosition({
-      lat: cryptoOrders[index].lat,
-      lng: cryptoOrders[index].lng,
-      radius: cryptoOrders[index].radius
-    })
+      lat: tableItems[index].lat,
+      lng: tableItems[index].lng,
+      radius: tableItems[index].radius
+    });
 
     setMapViewBounds({
-      x1: Number(cryptoOrders[index].lat)-0.05,
-      y1: Number(cryptoOrders[index].lng)-0.05,
-      x2: Number(cryptoOrders[index].lat)+0.05,
-      y2: Number(cryptoOrders[index].lng)+0.05,
-    })
+      x1: Number(tableItems[index].lat) - 0.05,
+      y1: Number(tableItems[index].lng) - 0.05,
+      x2: Number(tableItems[index].lat) + 0.05,
+      y2: Number(tableItems[index].lng) + 0.05
+    });
 
-    onMapViewHandlerClick()
-  }
+    onMapViewHandlerClick();
+  };
 
   return (
     <Card>
-        <CardHeader
+      <CardHeader
         action={
           <Box width={250}>
             <FormControl fullWidth variant="outlined">
-              <TextField id="outlined-basic" label="Search" name="search" variant="outlined" />
+              <TextField
+                id="outlined-basic"
+                label="Search"
+                name="search"
+                variant="outlined"
+              />
             </FormControl>
           </Box>
         }
@@ -162,25 +156,58 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
       >
         <Box sx={style}>
           <MapContainer
-            bounds={[[mapViewBounds.x1, mapViewBounds.y1], [mapViewBounds.x2, mapViewBounds.y2]]}
+            bounds={[
+              [mapViewBounds.x1, mapViewBounds.y1],
+              [mapViewBounds.x2, mapViewBounds.y2]
+            ]}
             style={{ height: '600px', width: '100%' }}
             zoom={9}
             ref={mapRef}
           >
-            <Marker position={[currentPosition.lat, currentPosition.lng]}>
-            </Marker>
-            <Polygon positions={[[
-              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)-Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)-Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
-            ]]} />
+            <Marker
+              position={[currentPosition.lat, currentPosition.lng]}
+            ></Marker>
+            <Polygon
+              positions={[
+                [
+                  [
+                    Number(currentPosition.lat) -
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) +
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) -
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) -
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) +
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) -
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) +
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) +
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) -
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) +
+                      Number(currentPosition.radius) / 200
+                  ]
+                ]
+              ]}
+            />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </MapContainer>
         </Box>
       </Modal>
-                      
+
       <TableContainer>
         <Table>
           <TableHead>
@@ -196,135 +223,145 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders && paginatedCryptoOrders.map((cryptoOrder, index) => {
-              return (
-                <TableRow
-                  hover
-                  key={index}
-                >
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {index+1}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.city ?? ''} 
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      <Link to={''} onClick={() => onMapView(index)}>
-                      {cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''} {cryptoOrder.road ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.county ?? ''}
-                      </Link>
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.youRealtor}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.withRealtor}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.mortage}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title={
-                      "1. Type of house : " + cryptoOrder.typeHouse + ",\n" +
-                      "2. Interest City : " + cryptoOrder.interestCity + ",\n" +
-                      "3. Communication : " + cryptoOrder.phone
-                      } arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.primary.lighter
-                          },
-                          color: theme.palette.primary.main
-                        }}
-                        color="inherit"
-                        size="small"
+            {paginatedTableData &&
+              paginatedTableData.map((tableItem, index) => {
+                return (
+                  <TableRow hover key={index}>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
                       >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Contact" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.error.lighter
-                          },
-                          color: theme.palette.error.main
-                        }}
-                        color="inherit"
-                        size="small"
+                        {index + 1}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
                       >
-                        <ConnectWithoutContactIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                        {tableItem.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.city ?? ''}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        <Link to={''} onClick={() => onMapView(index)}>
+                          {tableItem.houseNumber ?? ''}{' '}
+                          {tableItem.highway ?? ''} {tableItem.suburb ?? ''}{' '}
+                          {tableItem.road ?? ''} {tableItem.village ?? ''}{' '}
+                          {tableItem.quarter ?? ''} {tableItem.region ?? ''}{' '}
+                          {tableItem.county ?? ''}
+                        </Link>
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.youRealtor}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.withRealtor}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.mortage}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip
+                        title={
+                          '1. Type of house : ' +
+                          tableItem.typeHouse +
+                          ',\n' +
+                          '2. Interest City : ' +
+                          tableItem.interestCity +
+                          ',\n' +
+                          '3. Communication : ' +
+                          tableItem.phone
+                        }
+                        arrow
+                      >
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.colors.primary.lighter
+                            },
+                            color: theme.palette.primary.main
+                          }}
+                          color="inherit"
+                          size="small"
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Contact" arrow>
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.colors.error.lighter
+                            },
+                            color: theme.palette.error.main
+                          }}
+                          color="inherit"
+                          size="small"
+                        >
+                          <ConnectWithoutContactIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
       <Box p={2}>
         <TablePagination
           component="div"
-          count={filteredCryptoOrders.length}
+          count={filteredTableItems.length}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={page}
@@ -337,11 +374,11 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
 };
 
 RecentOrdersTable.propTypes = {
-  cryptoOrders: PropTypes.array.isRequired
+  tableItems: PropTypes.array.isRequired
 };
 
 RecentOrdersTable.defaultProps = {
-  cryptoOrders: []
+  tableItems: []
 };
 
 export default RecentOrdersTable;

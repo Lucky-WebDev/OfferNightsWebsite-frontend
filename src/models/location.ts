@@ -1,6 +1,6 @@
-export type CryptoOrderStatus = 'completed' | 'pending' | 'failed';
+export type ItemStatus = 'completed' | 'pending' | 'failed';
 
-export interface CryptoOrder {
+export interface DataFilter {
   id: number;
   address: string;
   postalCode: string;

@@ -15,7 +15,7 @@ import {
   Modal
 } from '@mui/material';
 
-import { CryptoOrder, CryptoOrderStatus } from '../../../../../models/crypto_order';
+import { DataFilter, ItemStatus } from '../../../../../models/data_filter';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,15 +25,15 @@ import { deleteActiveShowing } from '../../../../../actions/showingAction';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 
 interface Filters {
-  status?: CryptoOrderStatus;
+  status?: ItemStatus;
 }
 
 const applyPagination = (
-  cryptoOrders: any,
+  tableItems: any,
   page: number,
   limit: number
 ): any[] => {
-  return cryptoOrders && cryptoOrders.slice(page * limit, page * limit + limit);
+  return tableItems && tableItems.slice(page * limit, page * limit + limit);
 };
 
 const style = {
@@ -50,12 +50,14 @@ const style = {
 
 function ActiveShowingTable() {
   const dispatch: any = useDispatch();
-  const myActiveShowing: any = useSelector((state: StateType) => state.auth.myActiveShowing);
+  const myActiveShowing: any = useSelector(
+    (state: StateType) => state.auth.myActiveShowing
+  );
 
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
 
-  const currentUser: any = useSelector((state: StateType) => state.auth.user)
+  const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
   const [open, setOpen] = useState(false);
 
@@ -63,10 +65,10 @@ function ActiveShowingTable() {
     const data = {
       userId: currentUser._id,
       id: id
-    }
+    };
     // e.preventDefault();
-    dispatch(deleteActiveShowing(data))
-  }
+    dispatch(deleteActiveShowing(data));
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -80,19 +82,15 @@ function ActiveShowingTable() {
     setLimit(parseInt(event.target.value));
   };
 
-  const paginatedCryptoOrders = applyPagination(
-    myActiveShowing,
-    page,
-    limit
-  );
+  const paginatedTableData = applyPagination(myActiveShowing, page, limit);
 
   const theme = useTheme();
 
   const mapRef = useRef();
 
   const [mapView, setMapView] = useState(false);
-  const onMapViewHandlerClick = () => setMapView(true)
-  const onMapViewHandlerClose = () => setMapView(false)
+  const onMapViewHandlerClick = () => setMapView(true);
+  const onMapViewHandlerClose = () => setMapView(false);
 
   const [currentPosition, setCurrentPosition] = useState({
     lat: '',
@@ -106,25 +104,25 @@ function ActiveShowingTable() {
     y2: 0
   });
 
-  const onMapView = index => {
+  const onMapView = (index) => {
     setCurrentPosition({
       lat: myActiveShowing[index].lat,
       lng: myActiveShowing[index].lng
-    })
+    });
 
     setMapViewBounds({
-      x1: Number(myActiveShowing[index].lat)-0.05,
-      y1: Number(myActiveShowing[index].lng)-0.05,
-      x2: Number(myActiveShowing[index].lat)+0.05,
-      y2: Number(myActiveShowing[index].lng)+0.05,
-    })
+      x1: Number(myActiveShowing[index].lat) - 0.05,
+      y1: Number(myActiveShowing[index].lng) - 0.05,
+      x2: Number(myActiveShowing[index].lat) + 0.05,
+      y2: Number(myActiveShowing[index].lng) + 0.05
+    });
 
-    onMapViewHandlerClick()
-  }
+    onMapViewHandlerClick();
+  };
 
   return (
-      <div style={{width: '100%'}}>
-        <Modal
+    <div style={{ width: '100%' }}>
+      <Modal
         open={mapView}
         onClose={onMapViewHandlerClose}
         aria-labelledby="modal-modal-title"
@@ -132,13 +130,17 @@ function ActiveShowingTable() {
       >
         <Box sx={style}>
           <MapContainer
-            bounds={[[mapViewBounds.x1, mapViewBounds.y1], [mapViewBounds.x2, mapViewBounds.y2]]}
+            bounds={[
+              [mapViewBounds.x1, mapViewBounds.y1],
+              [mapViewBounds.x2, mapViewBounds.y2]
+            ]}
             style={{ height: '600px', width: '100%' }}
             zoom={9}
             ref={mapRef}
           >
-            <Marker position={[currentPosition.lat, currentPosition.lng]}>
-            </Marker>
+            <Marker
+              position={[currentPosition.lat, currentPosition.lng]}
+            ></Marker>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </MapContainer>
         </Box>
@@ -158,131 +160,131 @@ function ActiveShowingTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders && paginatedCryptoOrders.map((cryptoOrder, index) => {
-              return (
-                <TableRow
-                  hover
-                  key={index}
-                >
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {limit*page+index+1}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.city ?? ''} 
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.houseNumber ?? ''} {cryptoOrder.highway ?? ''} {cryptoOrder.suburb ?? ''} {cryptoOrder.road ?? ''} {cryptoOrder.village ?? ''} {cryptoOrder.quarter ?? ''} {cryptoOrder.region ?? ''} {cryptoOrder.county ?? ''}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.code}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.unit}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.price}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.offerDate}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="View on Map" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.primary.lighter
-                          },
-                          color: theme.palette.primary.main
-                        }}
-                        color="inherit"
-                        size="small"
-                        onClick={() => onMapView(index)}
+            {paginatedTableData &&
+              paginatedTableData.map((tableItem, index) => {
+                return (
+                  <TableRow hover key={index}>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
                       >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete active showing" arrow>
-                      
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.error.lighter
-                          },
-                          color: theme.palette.error.main
-                        }}
-                        color="inherit"
-                        size="small"
-                        onClick={() => onDeleteButton(cryptoOrder._id)}
+                        {limit * page + index + 1}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
                       >
-                        <DeleteIcon fontSize='small' />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                  <SnackbarProvider
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'center',
-                    }}
-                  ></SnackbarProvider>
-                </TableRow>
-              );
-            })}
+                        {tableItem.city ?? ''}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.houseNumber ?? ''} {tableItem.highway ?? ''}{' '}
+                        {tableItem.suburb ?? ''} {tableItem.road ?? ''}{' '}
+                        {tableItem.village ?? ''} {tableItem.quarter ?? ''}{' '}
+                        {tableItem.region ?? ''} {tableItem.county ?? ''}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.code}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.unit}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.price}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {tableItem.offerDate}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="View on Map" arrow>
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.colors.primary.lighter
+                            },
+                            color: theme.palette.primary.main
+                          }}
+                          color="inherit"
+                          size="small"
+                          onClick={() => onMapView(index)}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete active showing" arrow>
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.colors.error.lighter
+                            },
+                            color: theme.palette.error.main
+                          }}
+                          color="inherit"
+                          size="small"
+                          onClick={() => onDeleteButton(tableItem._id)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                    <SnackbarProvider
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center'
+                      }}
+                    ></SnackbarProvider>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -297,9 +299,9 @@ function ActiveShowingTable() {
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
-      </div>
+    </div>
     // </Card>
   );
-};
+}
 
 export default ActiveShowingTable;

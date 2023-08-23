@@ -171,7 +171,9 @@ const SubMenuWrapper = styled(Box)(
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
 
-  const isAuthenticated: boolean = useSelector((state: StateType) => state.auth.isAuthenticated);
+  const isAuthenticated: boolean = useSelector(
+    (state: StateType) => state.auth.isAuthenticated
+  );
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
   return (
@@ -229,8 +231,7 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
-        {currentUser.status != "admin" ? (
-          <List
+        <List
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
@@ -245,7 +246,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/my-offer"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/components/my-offer'
+                  }
                   startIcon={<BallotTwoToneIcon />}
                 >
                   My Offer
@@ -256,7 +261,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/offer-history"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/components/offer-history'
+                  }
                   startIcon={<BeachAccessTwoToneIcon />}
                 >
                   Offer History
@@ -267,7 +276,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/management/active-agents"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/management/active-agents'
+                  }
                   startIcon={<EmojiEventsTwoToneIcon />}
                 >
                   Active Agents
@@ -278,7 +291,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/management/active-showing-agents"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/management/active-showing-agents'
+                  }
                   startIcon={<FilterVintageTwoToneIcon />}
                 >
                   Active Showing Agents
@@ -289,7 +306,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/management/buyers"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/management/buyers'
+                  }
                   startIcon={<HowToVoteTwoToneIcon />}
                 >
                   Buyers
@@ -300,7 +321,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/management/sellers"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/management/sellers'
+                  }
                   startIcon={<LocalPharmacyTwoToneIcon />}
                 >
                   Sellers
@@ -311,7 +336,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/management/faq"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/management/faq'
+                  }
                   startIcon={<RedeemTwoToneIcon />}
                 >
                   FAQ
@@ -322,7 +351,11 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/management/contact"}
+                  to={
+                    isAuthenticated == false
+                      ? '/user/sign-in'
+                      : '/management/contact'
+                  }
                   startIcon={<SettingsTwoToneIcon />}
                 >
                   Contact Us
@@ -331,33 +364,6 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
-        ) : (
-          <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Menu
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={isAuthenticated == false ? "/user/sign-in" : "/components/my-offer"}
-                  startIcon={<BallotTwoToneIcon />}
-                >
-                  Management Subscribers
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        )}
-        
       </MenuWrapper>
     </>
   );

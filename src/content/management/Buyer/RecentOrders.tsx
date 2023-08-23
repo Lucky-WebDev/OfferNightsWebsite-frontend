@@ -4,14 +4,19 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../../../reducer/dataType';
 
 function RecentOrders() {
+  const allBuyerInfo: any = useSelector(
+    (state: StateType) => state.auth.allBuyerInfo
+  );
 
-  const allBuyerInfo: any = useSelector((state: StateType) => state.auth.allBuyerInfo);
-  
-  const cryptoOrders: any = allBuyerInfo;
-  
+  const tableItems: any = allBuyerInfo;
+
   return (
     <Card>
-      {allBuyerInfo == null ? (<RecentOrdersTable cryptoOrders={[]} />) : (<RecentOrdersTable cryptoOrders={cryptoOrders} />)}
+      {allBuyerInfo == null ? (
+        <RecentOrdersTable tableItems={[]} />
+      ) : (
+        <RecentOrdersTable tableItems={tableItems} />
+      )}
     </Card>
   );
 }

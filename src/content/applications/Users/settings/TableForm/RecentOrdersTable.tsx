@@ -18,7 +18,7 @@ import {
   Modal
 } from '@mui/material';
 
-import { CryptoOrder, CryptoOrderStatus } from '../../../../../models/location';
+import { DataFilter, ItemStatus } from '../../../../../models/location';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
@@ -44,7 +44,9 @@ function RecentOrdersTable() {
 
   const theme = useTheme();
 
-  const activeArea: any = useSelector((state: StateType) => state.auth.activeArea)
+  const activeArea: any = useSelector(
+    (state: StateType) => state.auth.activeArea
+  );
 
   const currentUser: any = useSelector((state: StateType) => state.auth.user);
 
@@ -52,16 +54,16 @@ function RecentOrdersTable() {
     const data = {
       userId: currentUser._id,
       id: id
-    }
+    };
     // e.preventDefault();
-    dispatch(deleteActiveArea(data))
-  }
+    dispatch(deleteActiveArea(data));
+  };
 
   const mapRef = useRef();
 
   const [mapView, setMapView] = useState(false);
-  const onMapViewHandlerClick = () => setMapView(true)
-  const onMapViewHandlerClose = () => setMapView(false)
+  const onMapViewHandlerClick = () => setMapView(true);
+  const onMapViewHandlerClose = () => setMapView(false);
 
   const [currentPosition, setCurrentPosition] = useState({
     lat: '',
@@ -73,25 +75,25 @@ function RecentOrdersTable() {
     x1: 0,
     y1: 0,
     x2: 0,
-    y2: 0,
+    y2: 0
   });
 
-  const onMapView = index => {
+  const onMapView = (index) => {
     setCurrentPosition({
       lat: activeArea[index].lat,
       lng: activeArea[index].lng,
       radius: Number(activeArea[index].radius)
-    })
+    });
 
     setMapViewBounds({
-      x1: Number(activeArea[index].lat)-0.05,
-      y1: Number(activeArea[index].lng)-0.05,
-      x2: Number(activeArea[index].lat)+0.05,
-      y2: Number(activeArea[index].lng)+0.05,
-    })
+      x1: Number(activeArea[index].lat) - 0.05,
+      y1: Number(activeArea[index].lng) - 0.05,
+      x2: Number(activeArea[index].lat) + 0.05,
+      y2: Number(activeArea[index].lng) + 0.05
+    });
 
-    onMapViewHandlerClick()
-  }
+    onMapViewHandlerClick();
+  };
 
   return (
     <Card>
@@ -103,20 +105,53 @@ function RecentOrdersTable() {
       >
         <Box sx={style}>
           <MapContainer
-            bounds={[[mapViewBounds.x1, mapViewBounds.y1], [mapViewBounds.x2, mapViewBounds.y2]]}
+            bounds={[
+              [mapViewBounds.x1, mapViewBounds.y1],
+              [mapViewBounds.x2, mapViewBounds.y2]
+            ]}
             style={{ height: '600px', width: '100%' }}
             zoom={9}
             ref={mapRef}
           >
-            <Marker position={[currentPosition.lat, currentPosition.lng]}>
-            </Marker>
-            <Polygon positions={[[
-              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)-Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)-Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)+Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
-              [Number(currentPosition.lat)-Number(currentPosition.radius)/200, Number(currentPosition.lng)+Number(currentPosition.radius)/200],
-            ]]} />
+            <Marker
+              position={[currentPosition.lat, currentPosition.lng]}
+            ></Marker>
+            <Polygon
+              positions={[
+                [
+                  [
+                    Number(currentPosition.lat) -
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) +
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) -
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) -
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) +
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) -
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) +
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) +
+                      Number(currentPosition.radius) / 200
+                  ],
+                  [
+                    Number(currentPosition.lat) -
+                      Number(currentPosition.radius) / 200,
+                    Number(currentPosition.lng) +
+                      Number(currentPosition.radius) / 200
+                  ]
+                ]
+              ]}
+            />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </MapContainer>
         </Box>
@@ -134,115 +169,116 @@ function RecentOrdersTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {activeArea && activeArea.map((area, index) => {
-              return (
-                <TableRow
-                  hover
-                  key={index+1}
-                >
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {index+1}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {area.city ?? ''} 
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {area.houseNumber ?? ''} {area.highway ?? ''} {area.suburb ?? ''} {area.road ?? ''} {area.village ?? ''} {area.quarter ?? ''} {area.region ?? ''} {area.county ?? ''}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {area.code}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {area.radius} Km
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="View Location" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.primary.lighter
-                          },
-                          color: theme.palette.primary.main
-                        }}
-                        color="inherit"
-                        size="small"
-                        onClick={() => onMapView(index)}
+            {activeArea &&
+              activeArea.map((area, index) => {
+                return (
+                  <TableRow hover key={index + 1}>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
                       >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete Location" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.warning.lighter
-                          },
-                          color: theme.palette.warning.main
-                        }}
-                        color="inherit"
-                        size="small"
-                        onClick={() => onDeleteButton(area._id)}
+                        {index + 1}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
                       >
-                        <DeleteTwoToneIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                        {area.city ?? ''}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {area.houseNumber ?? ''} {area.highway ?? ''}{' '}
+                        {area.suburb ?? ''} {area.road ?? ''}{' '}
+                        {area.village ?? ''} {area.quarter ?? ''}{' '}
+                        {area.region ?? ''} {area.county ?? ''}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {area.code}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        gutterBottom
+                        noWrap
+                      >
+                        {area.radius} Km
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="View Location" arrow>
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.colors.primary.lighter
+                            },
+                            color: theme.palette.primary.main
+                          }}
+                          color="inherit"
+                          size="small"
+                          onClick={() => onMapView(index)}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Location" arrow>
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.colors.warning.lighter
+                            },
+                            color: theme.palette.warning.main
+                          }}
+                          color="inherit"
+                          size="small"
+                          onClick={() => onDeleteButton(area._id)}
+                        >
+                          <DeleteTwoToneIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
     </Card>
   );
-};
+}
 
 RecentOrdersTable.propTypes = {
-  cryptoOrders: PropTypes.array.isRequired
+  tableItems: PropTypes.array.isRequired
 };
 
 RecentOrdersTable.defaultProps = {
-  cryptoOrders: []
+  tableItems: []
 };
 
 export default RecentOrdersTable;

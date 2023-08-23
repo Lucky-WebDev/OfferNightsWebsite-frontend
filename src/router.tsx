@@ -17,8 +17,6 @@ const Loader = (Component) => (props) =>
 
 const Overview = Loader(lazy(() => import('./content/overview')));
 
-// Dashboards
-
 // Auth
 
 const Register = Loader(lazy(() => import('./content/auth/Register')));
@@ -27,25 +25,17 @@ const Verify = Loader(lazy(() => import('./content/auth/Verify')));
 
 // Management
 
-const Agent = Loader(
-  lazy(() => import('./content/management/ActiveAgent'))
-);
+const Agent = Loader(lazy(() => import('./content/management/ActiveAgent')));
 
-const Buyer = Loader(
-  lazy(() => import('./content/management/Buyer'))
-);
+const Buyer = Loader(lazy(() => import('./content/management/Buyer')));
 
-const Seller = Loader(
-  lazy(() => import('./content/management/Seller'))
-);
+const Seller = Loader(lazy(() => import('./content/management/Seller')));
 
 const ActiveShowingAgents = Loader(
   lazy(() => import('./content/management/ActiveShowingAgents'))
 );
 
-const Contact = Loader(
-  lazy(() => import('./content/management/Contact'))
-);
+const Contact = Loader(lazy(() => import('./content/management/Contact')));
 
 const UserProfile = Loader(
   lazy(() => import('./content/applications/Users/profile'))
@@ -53,30 +43,6 @@ const UserProfile = Loader(
 const UserSettings = Loader(
   lazy(() => import('./content/applications/Users/settings'))
 );
-
-// Components
-
-const Buttons = Loader(
-  lazy(() => import('./content/pages/Components/Buttons'))
-);
-const Modals = Loader(
-  lazy(() => import('./content/pages/Components/Modals'))
-);
-const Accordions = Loader(
-  lazy(() => import('./content/pages/Components/Accordions'))
-);
-const Tabs = Loader(lazy(() => import('./content/pages/Components/Tabs')));
-const Badges = Loader(
-  lazy(() => import('./content/pages/Components/Badges'))
-);
-const Tooltips = Loader(
-  lazy(() => import('./content/pages/Components/Tooltips'))
-);
-const Avatars = Loader(
-  lazy(() => import('./content/pages/Components/Avatars'))
-);
-const Cards = Loader(lazy(() => import('./content/pages/Components/Cards')));
-const Forms = Loader(lazy(() => import('./content/pages/Components/Forms')));
 
 // Status
 
@@ -148,7 +114,7 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <Overview />
-      },
+      }
     ]
   },
   {
@@ -206,10 +172,6 @@ const routes: RouteObject[] = [
         path: '',
         element: <Navigate to="my-offer" replace />
       },
-      // {
-      //   path: 'active-showing-agents',
-      //   element: <Agent />
-      // },
       {
         path: 'active-agents',
         element: <Agent />
@@ -246,52 +208,6 @@ const routes: RouteObject[] = [
             element: <UserSettings />
           }
         ]
-      }
-    ]
-  },
-  {
-    path: '/components',
-    element: <SidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <Navigate to="buttons" replace />
-      },
-      {
-        path: 'buttons',
-        element: <Buttons />
-      },
-      {
-        path: 'modals',
-        element: <Modals />
-      },
-      {
-        path: 'accordions',
-        element: <Accordions />
-      },
-      {
-        path: 'tabs',
-        element: <Tabs />
-      },
-      {
-        path: 'badges',
-        element: <Badges />
-      },
-      {
-        path: 'tooltips',
-        element: <Tooltips />
-      },
-      {
-        path: 'avatars',
-        element: <Avatars />
-      },
-      {
-        path: 'cards',
-        element: <Cards />
-      },
-      {
-        path: 'forms',
-        element: <Forms />
       }
     ]
   }
